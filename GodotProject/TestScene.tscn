@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvxb4fsy14lni"]
+
+[ext_resource type="Script" path="res://addons/TeleportMan/MyNode.gd" id="1_11ky8"]
+
+[node name="Scene" type="Node3D"]
+script = ExtResource("1_11ky8")
