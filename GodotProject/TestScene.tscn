@@ -1,6 +1,29 @@
-[gd_scene load_steps=2 format=3 uid="uid://bvxb4fsy14lni"]
+[gd_scene load_steps=4 format=3 uid="uid://bvxb4fsy14lni"]
 
-[ext_resource type="Script" path="res://addons/TeleportMan/MyNode.gd" id="1_11ky8"]
+[ext_resource type="Script" path="res://addons/TeleportMan/MyNode.gd" id="1_tlow2"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_gxqxq"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_x5je6"]
 
 [node name="Scene" type="Node3D"]
-script = ExtResource("1_11ky8")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.76817)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.782771, 0.62231, 0, -0.62231, 0.782771, 0, 2.83213, 4.75453)
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.12222, 0, 0)
+script = ExtResource("1_tlow2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+mesh = SubResource("CylinderMesh_gxqxq")
+skeleton = NodePath("../..")
+
+[node name="MyNode" type="MyNode" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.546129, -0.837701, 0, 0.837701, 0.546129, 0.681982, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MyNode"]
+mesh = SubResource("CylinderMesh_x5je6")

@@ -1,0 +1,24 @@
+-lib gdscript
+
+-cp HaxeCode/godot_bindings
+-cp HaxeCode/src
+-cp HaxeCode/reflaxe.godot
+-cp HaxeCode/language_specific_overrides/gdscript
+
+-D reflaxe_measure
+-D reflaxe_extern_meta
+
+-D gdscript-output=GodotProject/addons/TeleportMan
+
+-D generate_godot_plugin
+-D godot_direct_singletons
+
+-D godot_plugin_name=TeleportMan
+-D godot_plugin_description=The GDScript plugin for Teleport Man.
+-D godot_plugin_author=Robert Borghese
+-D godot_plugin_version=1.0.0
+-D godot_plugin_script_name=plugin
+
+--macro comptime.Expose.gdPackage("game")
+
+game

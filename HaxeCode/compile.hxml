@@ -1,7 +1,0 @@
--cp src
--lib gdscript
--D gdscript-output=../GodotProject/addons/TeleportMan
--D generate_godot_plugin
-
-# must include classes/packages here to force them to be compiled
-game

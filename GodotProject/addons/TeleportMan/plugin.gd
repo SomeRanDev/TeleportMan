@@ -4,7 +4,7 @@ extends EditorPlugin
 const AUTOLOAD_NAME = "HxAutoLoad"
 
 func _enter_tree():
-	add_custom_type("MyNode", "Node3D", preload("MyNode.gd"), preload("res://icon.svg"))
+	pass
 
 func _exit_tree():
-	remove_custom_type("MyNode")
+	pass

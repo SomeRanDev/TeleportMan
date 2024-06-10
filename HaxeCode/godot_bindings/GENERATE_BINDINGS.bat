@@ -1,0 +1,1 @@
+haxelib run godot-api-generator "godot" "extension_api.json" --cpp --nativeName --godotVariantType --useGodotTypedArray
