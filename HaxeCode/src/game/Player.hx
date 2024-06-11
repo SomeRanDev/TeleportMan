@@ -63,9 +63,7 @@ class Player extends CharacterBody3D {
 			storedPosition = get_global_position();
 			storedMouseRotation = mouseRotation;
 			storedCameraForward = -camera.get_global_transform().basis.z;
-			trace(get_velocity());
 		} else if(GameInput.isRightActionJustPressed()) {
-			trace(get_velocity());
 			final cameraForwardVector = -camera.get_global_transform().basis.z;
 			final velocityForward = get_velocity().normalized();
 			final speed = get_velocity().length();
@@ -91,10 +89,6 @@ class Player extends CharacterBody3D {
 				trace(-velocityDir.get_global_transform().basis.z * speed);
 				set_velocity(-velocityDir.get_global_transform().basis.z * speed);
 			}
-			trace(get_velocity());
-
-			//trace(offset * storedCameraForward);
-			//set_velocity(offset * storedCameraForward);
 		}
 
 		if(GameInput.isJumpJustPressed()) {
@@ -118,6 +112,30 @@ class Player extends CharacterBody3D {
 		final inputDir = new Vector2(GameInput.getMoveXAxis(delta), GameInput.getMoveYAxis(delta)).normalized();
 		final direction = inputDir.rotated(-mouseRotation.y);
 
+		{
+			final tracker: Node3D = cast get_tree().get_current_scene().get_node("SpeedArrow/SpeedTrackerBase");
+			final scaler: Node3D = cast get_tree().get_current_scene().get_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
+
+			final velocityForward = get_velocity().normalized();
+			final speed = get_velocity().length();
+
+
+			scaler.set_scale(new Vector3(1.0, 1.0, speed / 15.0));
+			scaler.set_visible(speed > 0.0001);
+
+			if(speed > 0.0) {
+				if(velocityForward.is_equal_approx(Vector3.UP)) {
+					velocityDir.set_global_rotation_degrees(new Vector3(90, 0, 0));
+				} else if(velocityForward.is_equal_approx(Vector3.DOWN)) {
+					velocityDir.set_global_rotation_degrees(new Vector3(-90, 0, 0));
+				} else {
+					velocityDir.look_at(velocityDir.get_global_transform().origin + velocityForward, Vector3.UP);
+				}
+			}
+
+			tracker.set_global_rotation(tracker.get_global_rotation().lerp_angle_vec3(velocityDir.get_rotation(), 10.0 * delta));
+		}
+
 		final SPEED = 5.0;
 		var moveSpeed = delta * (Input.is_key_pressed(KEY_SHIFT) ? (SPEED * 5.0) : SPEED);
 		if(!direction.is_zero_approx()) {
@@ -136,15 +154,10 @@ class Player extends CharacterBody3D {
 			} else {
 
 				var xzAngle = xzSpeed.angle();
-				
 
 				var inputDirection = direction.angle();
 				final speedVsDirection = Math.abs(Godot.angle_difference(xzAngle, inputDirection));
 
-				cast(get_tree().get_current_scene().get_node("Speed"), Node2D).set_rotation(xzAngle);
-				cast(get_tree().get_current_scene().get_node("Input"), Node2D).set_rotation(inputDirection);
-
-				trace(speedVsDirection);
 				if(speedVsDirection < (Math.PI * 0.03)) {
 					if(xzLength < 15.0) {
 						xzLength += moveSpeed;
@@ -166,18 +179,12 @@ class Player extends CharacterBody3D {
 						if(xzLength < 0) xzLength = 0;
 					}
 					xzAngle = Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
-					//final r = 0.6 + (0.4 * (speedVsDirection - (Math.PI * 0.333)) / (Math.PI * 0.333));
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
 				} else {
 					velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 10.0);
 					velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 10.0);
 				}
-				//trace( * (180 / Math.PI),  * (180 / Math.PI));
-				//if(xzSpeed.angle() - )
-
-				//velocity.x += direction.x * moveSpeed;
-				///velocity.z += direction.y * moveSpeed;
 			
 			}
 		} else {
