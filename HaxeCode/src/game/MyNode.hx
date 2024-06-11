@@ -2,10 +2,7 @@ package game;
 
 import godot.Vector3;
 
-#if teleportman_web
-#else
 @:godot(cpp)
-#end
 class MyNode extends godot.Node3D {
 	public override function _ready() {
 		trace("in ready...");
