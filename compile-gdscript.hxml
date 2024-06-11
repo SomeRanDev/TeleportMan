@@ -2,8 +2,6 @@
 
 -cp HaxeCode/godot_bindings
 -cp HaxeCode/src
--cp HaxeCode/reflaxe.godot
--cp HaxeCode/language_specific_overrides/gdscript
 
 -D reflaxe_measure
 -D reflaxe_extern_meta
@@ -18,7 +16,5 @@
 -D godot_plugin_author=Robert Borghese
 -D godot_plugin_version=1.0.0
 -D godot_plugin_script_name=plugin
-
---macro comptime.Expose.gdPackage("game")
 
 game
