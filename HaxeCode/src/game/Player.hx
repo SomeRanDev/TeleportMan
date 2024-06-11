@@ -120,7 +120,7 @@ class Player extends CharacterBody3D {
 			final speed = get_velocity().length();
 
 
-			scaler.set_scale(new Vector3(1.0, 1.0, speed / 15.0));
+			scaler.set_scale(new Vector3(1.0, 1.0, speed / 15.0) * 0.75);
 			scaler.set_visible(speed > 0.0001);
 
 			if(speed > 0.0) {
@@ -145,7 +145,7 @@ class Player extends CharacterBody3D {
 			final xzSpeed = new Vector2(velocity.x, velocity.z);
 			var xzLength = xzSpeed.length();
 
-			if(xzLength < 5.0) {
+			if(xzLength < 4.9) {
 				velocity.x = direction.x * 5.0;
 				velocity.z = direction.y * 5.0;
 			} else {
@@ -185,8 +185,8 @@ class Player extends CharacterBody3D {
 			
 			}
 		} else {
-			velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed);
-			velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed);
+			velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 5.0);
+			velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 5.0);
 		}
 
 		set_velocity(velocity);

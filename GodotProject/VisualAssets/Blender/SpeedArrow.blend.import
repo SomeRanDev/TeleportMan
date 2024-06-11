@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://i060dj3c71mh"
-path="res://.godot/imported/InverseSphere.blend-22079b3c87d362ea480b18e1cf5f9662.scn"
+uid="uid://bgnt3h6u46d1"
+path="res://.godot/imported/SpeedArrow.blend-52af186da4ebb83190b7908e39b3b4ab.scn"
 
 [deps]
 
-source_file="res://VisualAssets/Blender/InverseSphere.blend"
-dest_files=["res://.godot/imported/InverseSphere.blend-22079b3c87d362ea480b18e1cf5f9662.scn"]
+source_file="res://VisualAssets/Blender/SpeedArrow.blend"
+dest_files=["res://.godot/imported/SpeedArrow.blend-52af186da4ebb83190b7908e39b3b4ab.scn"]
 
 [params]
 
@@ -33,14 +33,14 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"InverseSphere_Sphere": {
+"SpeedArrow_Cube_001": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://VisualAssets/Blender/InverseSphere.res"
+"save_to_file/path": "res://VisualAssets/Blender/SpeedArrow.res"
 }
 }
 }
