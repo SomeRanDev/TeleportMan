@@ -1,8 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://bvxb4fsy14lni"]
+[gd_scene load_steps=9 format=3 uid="uid://bvxb4fsy14lni"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_ce2ak"]
+[ext_resource type="Texture2D" uid="uid://b0nmsf47e0h6n" path="res://VisualAssets/Runtime/TeleportToTexture.tres" id="2_pd8y7"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8u3fe"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4pnkd"]
+frequency = 0.05
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qdvd2"]
+seamless = true
+noise = SubResource("FastNoiseLite_4pnkd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lknuy"]
+albedo_texture = SubResource("NoiseTexture2D_qdvd2")
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vw1ro"]
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
@@ -15,8 +26,9 @@ data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0
 transform = Transform3D(1, 0, 0, 0, 0.782771, 0.62231, 0, -0.62231, 0.782771, 0, 2.83213, 4.75453)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
 mesh = SubResource("PlaneMesh_8u3fe")
+surface_material_override/0 = SubResource("StandardMaterial3D_lknuy")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
 
@@ -24,7 +36,7 @@ mesh = SubResource("PlaneMesh_8u3fe")
 shape = SubResource("ConcavePolygonShape3D_vw1ro")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.68046, 3.13912)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
 script = ExtResource("1_ce2ak")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
@@ -34,3 +46,44 @@ shape = SubResource("CapsuleShape3D_ee1mi")
 
 [node name="Camera3D" type="Camera3D" parent="CharacterBody3D/CameraController"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.667364, -0.37835)
+current = true
+
+[node name="VelocityDir" type="Node3D" parent="CharacterBody3D/CameraController/Camera3D"]
+
+[node name="TeleportToViewport" type="SubViewport" parent="."]
+size = Vector2i(1152, 648)
+
+[node name="TeleportToController" type="Node3D" parent="TeleportToViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.68046, 3.13912)
+
+[node name="TeleportTo" type="Camera3D" parent="TeleportToViewport/TeleportToController"]
+
+[node name="TeleportToTexture" type="Sprite2D" parent="."]
+position = Vector2(997.067, 553.6)
+scale = Vector2(0.257407, 0.257407)
+texture = ExtResource("2_pd8y7")
+
+[node name="Speed" type="Node2D" parent="."]
+position = Vector2(41, 41)
+
+[node name="ColorRect" type="ColorRect" parent="Speed"]
+offset_left = -9.0
+offset_top = 32.0
+offset_right = 7.0
+offset_bottom = 45.0
+
+[node name="Input" type="Node2D" parent="."]
+position = Vector2(140, 44)
+
+[node name="ColorRect" type="ColorRect" parent="Input"]
+offset_left = -9.0
+offset_top = 32.0
+offset_right = 7.0
+offset_bottom = 45.0
+
+[node name="Label" type="RichTextLabel" parent="."]
+offset_top = 125.0
+offset_right = 234.0
+offset_bottom = 179.0
+text = "Im scared im scared
+someone please help me"

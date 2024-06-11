@@ -120,8 +120,6 @@ enum abstract InputKind(Int) {
 	Our custom singleton class for handling input.
 **/
 class GameInput extends godot.Object {
-	static var isMouseCaptured = false;
-
 	static var inputKind = InputKind.Keyboard;
 
 	static var time: Int;
@@ -263,17 +261,14 @@ class GameInput extends godot.Object {
 		Get `isMouseCaptured`.
 	**/
 	public static function getIsMouseCaptured() {
-		return isMouseCaptured;
+		return GodotInput.get_mouse_mode() == MOUSE_MODE_CAPTURED;
 	}
 
 	/**
 		Sets whether the game has "captured" the mouse.
 	**/
 	public static function setMouseCaptured(captured: Bool) {
-		if(isMouseCaptured != captured) {
-			isMouseCaptured = captured;
-			GodotInput.set_mouse_mode(isMouseCaptured ? MOUSE_MODE_CAPTURED : MOUSE_MODE_VISIBLE);
-		}
+		GodotInput.set_mouse_mode(captured ? MOUSE_MODE_CAPTURED : MOUSE_MODE_VISIBLE);
 	}
 
 	// ---
@@ -285,6 +280,7 @@ class GameInput extends godot.Object {
 	public static function isJumpPressed() return Jump.isPressed();
 	public static function isJumpJustPressed() return Jump.isJustPressed(time);
 	public static function isLeftActionPressed() return LeftAction.isPressed();
+	public static function isLeftActionJustPressed() return LeftAction.isJustPressed(time);
 	public static function isRightActionJustPressed() return RightAction.isJustPressed(time);
 
 	// ---
