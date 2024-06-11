@@ -3,7 +3,7 @@ package game;
 import godot.Godot;
 import godot.Vector3;
 
-function clamp(self: Float, min: Float, max: Float): Float {
+extern inline function clamp(self: Float, min: Float, max: Float): Float {
 	return if(self < min) min;
 	else if(self > max) max;
 	else self;

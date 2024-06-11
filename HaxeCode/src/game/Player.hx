@@ -144,13 +144,10 @@ class Player extends CharacterBody3D {
 
 			final xzSpeed = new Vector2(velocity.x, velocity.z);
 			var xzLength = xzSpeed.length();
-			if(xzLength < 2.0) {
-				moveSpeed *= 3.0;
-			}
 
-			if(xzLength < moveSpeed) {
-				velocity.x += direction.x * moveSpeed;
-				velocity.z += direction.y * moveSpeed;
+			if(xzLength < 5.0) {
+				velocity.x = direction.x * 5.0;
+				velocity.z = direction.y * 5.0;
 			} else {
 
 				var xzAngle = xzSpeed.angle();
