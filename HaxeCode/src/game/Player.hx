@@ -115,12 +115,14 @@ class Player extends CharacterBody3D {
 		{
 			final tracker: Node3D = cast get_tree().get_current_scene().get_node("SpeedArrow/SpeedTrackerBase");
 			final scaler: Node3D = cast get_tree().get_current_scene().get_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
+			final speedArrowViewport: Sprite2D = cast get_tree().get_current_scene().get_node("SpeedArrowViewport");
+			
 
 			final velocityForward = get_velocity().normalized();
 			final speed = get_velocity().length();
 
-
-			scaler.set_scale(new Vector3(1.0, 1.0, speed / 15.0) * 0.75);
+			cast(speedArrowViewport.get_material(), ShaderMaterial).set_shader_parameter("opacity", (speed / 8.0).clamp(0.0, 1.0));
+			scaler.set_scale(new Vector3(1.0, 1.0, (speed - 3.0) / 15.0) * 0.5);
 			scaler.set_visible(speed > 0.0001);
 
 			if(speed > 0.0) {

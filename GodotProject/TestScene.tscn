@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://bvxb4fsy14lni"]
+[gd_scene load_steps=27 format=3 uid="uid://bvxb4fsy14lni"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_ce2ak"]
 [ext_resource type="Texture2D" uid="uid://b0nmsf47e0h6n" path="res://VisualAssets/Runtime/TeleportToTexture.tres" id="2_pd8y7"]
@@ -6,7 +6,12 @@
 [ext_resource type="Shader" path="res://Code/Shaders/PostProcess.gdshader" id="4_07aff"]
 [ext_resource type="ArrayMesh" uid="uid://dd1deihayr0a" path="res://VisualAssets/Blender/InverseSphere.res" id="4_k3eog"]
 [ext_resource type="ArrayMesh" uid="uid://bb0non1l6rdt8" path="res://VisualAssets/Blender/SpeedArrow.res" id="4_yw0ut"]
+[ext_resource type="Material" uid="uid://dyhcey1ixyq4v" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor1.tres" id="5_c5u27"]
 [ext_resource type="Material" uid="uid://b0u0pyq3jolm6" path="res://VisualAssets/Materials/SkySphere.tres" id="5_xuyfb"]
+[ext_resource type="Material" uid="uid://br3npoq86nv6h" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor2.tres" id="6_b26at"]
+[ext_resource type="Script" path="res://addons/TeleportMan/ShiftingNoiseTexture.gd" id="7_j6311"]
+[ext_resource type="Material" uid="uid://66edy12coxqd" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor3.tres" id="7_x18eh"]
+[ext_resource type="Material" uid="uid://bwg4thvd3fqqr" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor4.tres" id="8_ipqov"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_8u3fe"]
 
@@ -27,21 +32,10 @@ data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b2lnl"]
 shader = ExtResource("3_y23i5")
+shader_parameter/opacity = 1.0
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_5bxvl"]
 viewport_path = NodePath("SpeedArrow/SpeedDir")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wnfyt"]
-albedo_color = Color(0.4, 1, 0.5, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u45au"]
-albedo_color = Color(0.670588, 1, 0.498039, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l3x8i"]
-albedo_color = Color(0, 1, 0.498039, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xdsvd"]
-albedo_color = Color(0.232, 0.58, 0.29, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_6yfr3"]
 size = Vector2(40, 40)
@@ -109,7 +103,7 @@ texture = ExtResource("2_pd8y7")
 
 [node name="SpeedArrowViewport" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_b2lnl")
-position = Vector2(128, 87.0001)
+position = Vector2(102, 94)
 scale = Vector2(0.257407, 0.257407)
 texture = SubResource("ViewportTexture_5bxvl")
 
@@ -124,7 +118,8 @@ size = Vector2i(1280, 1536)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 0)
 
 [node name="Camera3D" type="Camera3D" parent="SpeedArrow/SpeedDir/SpeedArrowCopyPos"]
-transform = Transform3D(1, 0, 0, 0, 0.974983, 0.22228, 0, -0.22228, 0.974983, 0, 0.817074, 5.23661)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.81741, 17.4692)
+fov = 50.0
 
 [node name="SpeedTrackerBase" type="Node3D" parent="SpeedArrow"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.324, -2.99)
@@ -132,13 +127,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.324, -2.99)
 [node name="SpeedTrackerScaler" type="Node3D" parent="SpeedArrow/SpeedTrackerBase"]
 
 [node name="SpeedArrow" type="MeshInstance3D" parent="SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler"]
-transform = Transform3D(0.5, 0, 0, 0, 0.25, 0, 0, 0, 0.5, 0, 0, 0)
 mesh = ExtResource("4_yw0ut")
 skeleton = NodePath("../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_wnfyt")
-surface_material_override/1 = SubResource("StandardMaterial3D_u45au")
-surface_material_override/2 = SubResource("StandardMaterial3D_l3x8i")
-surface_material_override/3 = SubResource("StandardMaterial3D_xdsvd")
+surface_material_override/0 = ExtResource("5_c5u27")
+surface_material_override/1 = ExtResource("6_b26at")
+surface_material_override/2 = ExtResource("7_x18eh")
+surface_material_override/3 = ExtResource("8_ipqov")
 
 [node name="SpeedArrowBackground" type="MeshInstance3D" parent="SpeedArrow"]
 transform = Transform3D(1, 0, 0, 0, 0.924026, 0.382329, 0, -0.382329, 0.924026, 0, -6.93449, -7.8009)
@@ -153,6 +147,8 @@ mesh = SubResource("BoxMesh_2f322")
 transform = Transform3D(200, 0, 0, 0, 200, 0, 0, 0, 200, 0, -50, 0)
 mesh = ExtResource("4_k3eog")
 surface_material_override/0 = ExtResource("5_xuyfb")
+script = ExtResource("7_j6311")
+speed = Vector3(5, 0, 0)
 
 [node name="PostProcess" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.05312e-06, 0)
