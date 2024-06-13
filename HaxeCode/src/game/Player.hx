@@ -10,6 +10,8 @@ class Player extends CharacterBody3D {
 
 	var cachedJumpInput = false;
 
+	var maxHorizontalAerialSpeed = 15.0;
+
 	var xzSpeed: Float = 0.0;
 	var gravity: Float;
 	var mouseRotation: Vector3;
@@ -21,12 +23,16 @@ class Player extends CharacterBody3D {
 	var storedMouseRotation: Vector3;
 	var storedCameraForward: Vector3;
 
+	static final MAX_HORIZONTAL_SPEED = 15.0;
+
 	public override function _ready() {
 		gravity = 20;
 		camera = cast get_node("CameraController/Camera3D");
 		velocityDir = cast get_node("CameraController/Camera3D/VelocityDir");
 
 		GameInput.init();
+
+		global_position = cast(get_scene_node("PlayerStart"), Node3D).global_position;
 	}
 
 	public override function _unhandled_input(event: InputEvent) {
@@ -53,11 +59,19 @@ class Player extends CharacterBody3D {
 		}
 	}
 
+	function get_scene_node(path: String): Node {
+		return get_tree().get_current_scene().get_node(path);
+	}
+
+	function get_persistent_node(path: String): Node {
+		return get_scene_node("PersistentContent/" + path);
+	}
+
 	public override function _process(delta: Float) {
 		GameInput.update();
 
 		if(GameInput.isLeftActionJustPressed()) {
-			final teleportToCamera: Node3D = cast get_tree().get_current_scene().get_node("TeleportToViewport/TeleportToController/TeleportTo");
+			final teleportToCamera: Node3D = cast get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
 			teleportToCamera.set_global_transform(camera.get_global_transform());
 
 			storedPosition = get_global_position();
@@ -97,14 +111,18 @@ class Player extends CharacterBody3D {
 			updateCameraRotation();
 
 			if(speed > 0.0) {
-				trace(-velocityDir.get_global_transform().basis.z * speed);
 				set_velocity(-velocityDir.get_global_transform().basis.z * speed);
+				maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
 			}
 		}
 
 		if(GameInput.isJumpJustPressed()) {
 			cachedJumpInput = true;
 		}
+	}
+
+	function getHorizontalSpeedVector(): Vector2 {
+		return new Vector2(velocity.x, velocity.z);
 	}
 
 	public override function _physics_process(delta: Float) {
@@ -118,22 +136,23 @@ class Player extends CharacterBody3D {
 
 		if(cachedJumpInput && is_on_floor()) {
 			velocity.y = 7.0;
+			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
 		}
 
 		final inputDir = new Vector2(GameInput.getMoveXAxis(delta), GameInput.getMoveYAxis(delta)).normalized();
 		final direction = inputDir.rotated(-mouseRotation.y);
 
 		{
-			final tracker: Node3D = cast get_tree().get_current_scene().get_node("SpeedArrow/SpeedTrackerBase");
-			final scaler: Node3D = cast get_tree().get_current_scene().get_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
-			final speedArrowViewport: Sprite2D = cast get_tree().get_current_scene().get_node("SpeedArrowViewport");
+			final tracker: Node3D = cast get_persistent_node("SpeedArrow/SpeedTrackerBase");
+			final scaler: Node3D = cast get_persistent_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
+			final speedArrowViewport: Sprite2D = cast get_persistent_node("SpeedArrowViewport");
 			
 
 			final velocityForward = get_velocity().normalized();
 			final speed = get_velocity().length();
 
 			cast(speedArrowViewport.get_material(), ShaderMaterial).set_shader_parameter("opacity", (speed / 8.0).clamp(0.0, 1.0));
-			scaler.set_scale(new Vector3(1.0, 1.0, (speed - 3.0) / 15.0) * 0.5);
+			scaler.set_scale(new Vector3(1.0, 1.0, (speed - 3.0) / MAX_HORIZONTAL_SPEED) * 0.5);
 			scaler.set_visible(speed > 0.0001);
 
 			if(speed > 0.0) {
@@ -151,11 +170,42 @@ class Player extends CharacterBody3D {
 
 		final SPEED = 5.0;
 		var moveSpeed = delta * (Input.is_key_pressed(KEY_SHIFT) ? (SPEED * 5.0) : SPEED);
-		if(!direction.is_zero_approx()) {
+		if(!is_on_floor()) {
+			
+			if(!direction.is_zero_approx()) {
+				final xzSpeed = getHorizontalSpeedVector();
+				var xzLength = xzSpeed.length();
+				final xzAngle = xzSpeed.angle();
+				final inputDirection = direction.angle();
+
+				final speedVsDirection = Math.abs(Godot.angle_difference(xzAngle, inputDirection));
+
+				if(speedVsDirection > Math.PI * 0.5) {
+					velocity.x += direction.x * moveSpeed * 4.0;
+					velocity.z += direction.y * moveSpeed * 4.0;
+
+					var changed = false;
+					if(xzLength > maxHorizontalAerialSpeed) {
+						xzLength = maxHorizontalAerialSpeed;
+						changed = true;
+					} else if(xzLength < maxHorizontalAerialSpeed && xzLength > MAX_HORIZONTAL_SPEED) {
+						maxHorizontalAerialSpeed = xzLength;
+					}
+					if(changed) {
+						velocity.x = Math.cos(xzAngle) * xzLength;
+						velocity.z = Math.sin(xzAngle) * xzLength;
+					}
+				} else {
+					final _xzAngle = Godot.rotate_toward(xzAngle, inputDirection, moveSpeed * 0.2);
+					velocity.x = Math.cos(_xzAngle) * xzLength;
+					velocity.z = Math.sin(_xzAngle) * xzLength;
+				}
+			}
+		} else if(!direction.is_zero_approx()) {
 			//velocity.x = direction.x * moveSpeed;
 			//velocity.z = direction.y * moveSpeed;
 
-			final xzSpeed = new Vector2(velocity.x, velocity.z);
+			final xzSpeed = getHorizontalSpeedVector();
 			var xzLength = xzSpeed.length();
 
 			if(xzLength < 4.9) {
@@ -169,26 +219,26 @@ class Player extends CharacterBody3D {
 				final speedVsDirection = Math.abs(Godot.angle_difference(xzAngle, inputDirection));
 
 				if(speedVsDirection < (Math.PI * 0.03)) {
-					if(xzLength < 15.0) {
-						xzLength += moveSpeed;
-					}
+					xzLength = Godot.move_toward(xzLength, MAX_HORIZONTAL_SPEED, moveSpeed);
 					velocity.x = Math.cos(inputDirection) * xzLength;
 					velocity.z = Math.sin(inputDirection) * xzLength;
 				} else if(speedVsDirection < (Math.PI * 0.333)) {
-					if(xzLength < 15.0) {
-						xzLength -= moveSpeed * 3.0;
-						if(xzLength < 0) xzLength = 0;
-					}
+					//if(xzLength < 15.0) {
+						// xzLength -= moveSpeed * 10.0;
+						// if(xzLength < 0) xzLength = 0;
+					//}
 
-					xzAngle = Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
+					xzLength = Godot.move_toward(xzLength, 0, moveSpeed * 10.0);
+					xzAngle = inputDirection;//Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
 				} else if(speedVsDirection < (Math.PI * 0.8)) {
-					if(xzLength < 15.0) {
-						xzLength -= moveSpeed * 8.0;
+					//if(xzLength < 15.0) {
+						xzLength -= moveSpeed * 10.0;
 						if(xzLength < 0) xzLength = 0;
-					}
-					xzAngle = Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
+					//}
+					xzLength = Godot.move_toward(xzLength, 0, moveSpeed * 10.0);
+					xzAngle = inputDirection;//Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
 				} else {
@@ -204,17 +254,19 @@ class Player extends CharacterBody3D {
 				}
 			
 			}
-		} else if(is_on_floor()) {
+		} else {
 			// velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 5.0);
 			// velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 5.0);
 
-			final xzSpeed = new Vector2(velocity.x, velocity.z);
+			final xzSpeed = getHorizontalSpeedVector();
 			var xzLength = xzSpeed.length();
 			var xzAngle = xzSpeed.angle();
 			xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * 10.0);
 			velocity.x = Math.cos(xzAngle) * xzLength;
 			velocity.z = Math.sin(xzAngle) * xzLength;
 		}
+
+		cast(get_persistent_node("SpeedLabel"), Label).text = Std.string(Math.floor(velocity.length() * 10.0));
 
 		set_velocity(velocity);
 		move_and_slide();
@@ -224,7 +276,7 @@ class Player extends CharacterBody3D {
 
 	function updateCamera(delta: Float) {
 		mouseRotation.x += tiltInput * delta;
-		mouseRotation.x = mouseRotation.x.clamp(-Math.PI / 2.0, Math.PI / 2.0);
+		mouseRotation.x = mouseRotation.x.clamp(Math.PI * -0.4, Math.PI * 0.4);
 		mouseRotation.y += rotationInput * delta;
 
 		updateCameraRotation();

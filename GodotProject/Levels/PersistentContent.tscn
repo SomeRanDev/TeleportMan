@@ -1,0 +1,153 @@
+[gd_scene load_steps=24 format=3 uid="uid://c5w16oasxeujd"]
+
+[ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
+[ext_resource type="ArrayMesh" uid="uid://k2s5pmgfe3n" path="res://VisualAssets/Meshes/ScreenSaveAnimation/ScreenSave001.obj" id="2_y02ik"]
+[ext_resource type="Material" uid="uid://cuhd58o6hwmh7" path="res://VisualAssets/Materials/ScreenshotTakeMaterial.tres" id="3_tek3s"]
+[ext_resource type="Script" path="res://addons/TeleportMan/ScreenshotTake.gd" id="4_bg15k"]
+[ext_resource type="Shader" path="res://Code/Shaders/LiveActionPlayer.gdshader" id="5_po44y"]
+[ext_resource type="Script" path="res://addons/TeleportMan/LiveActionPlayer.gd" id="6_6iw36"]
+[ext_resource type="Texture2D" uid="uid://b0nmsf47e0h6n" path="res://VisualAssets/Runtime/TeleportToTexture.tres" id="7_47xf7"]
+[ext_resource type="Shader" path="res://Code/Shaders/SpeedArrowViewport.gdshader" id="8_lc7tj"]
+[ext_resource type="ArrayMesh" uid="uid://bb0non1l6rdt8" path="res://VisualAssets/Blender/SpeedArrow.res" id="9_4dd2m"]
+[ext_resource type="Material" uid="uid://dyhcey1ixyq4v" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor1.tres" id="10_6agv4"]
+[ext_resource type="Material" uid="uid://br3npoq86nv6h" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor2.tres" id="11_g8uac"]
+[ext_resource type="Material" uid="uid://66edy12coxqd" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor3.tres" id="12_ocih4"]
+[ext_resource type="Material" uid="uid://bwg4thvd3fqqr" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor4.tres" id="13_dmwbh"]
+[ext_resource type="Shader" path="res://Code/Shaders/PostProcess.gdshader" id="14_jywg6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vufq0"]
+shader = ExtResource("5_po44y")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b2lnl"]
+shader = ExtResource("8_lc7tj")
+shader_parameter/opacity = 1.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5bxvl"]
+viewport_path = NodePath("SpeedArrow/SpeedDir")
+
+[sub_resource type="QuadMesh" id="QuadMesh_6yfr3"]
+size = Vector2(40, 40)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rn74a"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_nfvai"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ttqsk"]
+render_priority = 0
+shader = ExtResource("14_jywg6")
+
+[sub_resource type="Environment" id="Environment_pisio"]
+background_mode = 1
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.5
+
+[node name="PersistentContent" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.782771, 0.62231, 0, -0.62231, 0.782771, 0, 2.83213, 4.75453)
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
+script = ExtResource("1_x4iy1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+shape = SubResource("CapsuleShape3D_ee1mi")
+
+[node name="CameraController" type="Node3D" parent="Player"]
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraController"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.667364, -0.37835)
+current = true
+
+[node name="VelocityDir" type="Node3D" parent="Player/CameraController/Camera3D"]
+
+[node name="ScreenshotTake" type="MeshInstance3D" parent="Player/CameraController/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.84)
+visible = false
+layers = 2
+mesh = ExtResource("2_y02ik")
+surface_material_override/0 = ExtResource("3_tek3s")
+script = ExtResource("4_bg15k")
+
+[node name="LiveActionPlayer" type="Sprite2D" parent="Player/CameraController/Camera3D"]
+visible = false
+material = SubResource("ShaderMaterial_vufq0")
+position = Vector2(576, 370)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("6_6iw36")
+
+[node name="TeleportToViewport" type="SubViewport" parent="."]
+size = Vector2i(1152, 648)
+
+[node name="TeleportToController" type="Node3D" parent="TeleportToViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.68046, 3.13912)
+
+[node name="TeleportTo" type="Camera3D" parent="TeleportToViewport/TeleportToController"]
+cull_mask = 1048573
+
+[node name="TeleportToTexture" type="Sprite2D" parent="."]
+position = Vector2(997.067, 553.6)
+scale = Vector2(0.257407, 0.257407)
+texture = ExtResource("7_47xf7")
+
+[node name="SpeedArrowViewport" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_b2lnl")
+position = Vector2(102, 94)
+scale = Vector2(0.257407, 0.257407)
+texture = SubResource("ViewportTexture_5bxvl")
+
+[node name="SpeedArrow" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 110)
+
+[node name="SpeedDir" type="SubViewport" parent="SpeedArrow"]
+msaa_3d = 2
+size = Vector2i(1280, 1536)
+
+[node name="SpeedArrowCopyPos" type="Node3D" parent="SpeedArrow/SpeedDir"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -50, 110)
+
+[node name="Camera3D" type="Camera3D" parent="SpeedArrow/SpeedDir/SpeedArrowCopyPos"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.81741, 17.4692)
+cull_mask = 1048573
+fov = 50.0
+
+[node name="SpeedTrackerBase" type="Node3D" parent="SpeedArrow"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.324, -2.99)
+
+[node name="SpeedTrackerScaler" type="Node3D" parent="SpeedArrow/SpeedTrackerBase"]
+
+[node name="SpeedArrow" type="MeshInstance3D" parent="SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler"]
+mesh = ExtResource("9_4dd2m")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("10_6agv4")
+surface_material_override/1 = ExtResource("11_g8uac")
+surface_material_override/2 = ExtResource("12_ocih4")
+surface_material_override/3 = ExtResource("13_dmwbh")
+
+[node name="SpeedArrowBackground" type="MeshInstance3D" parent="SpeedArrow"]
+transform = Transform3D(1, 0, 0, 0, 0.924026, 0.382329, 0, -0.382329, 0.924026, 0, -6.93449, -7.8009)
+mesh = SubResource("QuadMesh_6yfr3")
+surface_material_override/0 = SubResource("StandardMaterial3D_rn74a")
+
+[node name="PostProcess" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.05312e-06, 0)
+layers = 2
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_nfvai")
+surface_material_override/0 = SubResource("ShaderMaterial_ttqsk")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_pisio")
+
+[node name="SpeedLabel" type="Label" parent="."]
+offset_left = 2.0
+offset_top = 121.0
+offset_right = 206.0
+offset_bottom = 163.0
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
