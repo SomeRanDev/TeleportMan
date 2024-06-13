@@ -63,6 +63,17 @@ class Player extends CharacterBody3D {
 			storedPosition = get_global_position();
 			storedMouseRotation = mouseRotation;
 			storedCameraForward = -camera.get_global_transform().basis.z;
+
+			// final sst = new ScreenshotTake();
+			// sst.set_position(new Vector3(0, 0, -0.8));
+			// sst.set_rotation_degrees(new Vector3(90, 0, 0));
+			// final material: StandardMaterial3D = cast ResourceLoader.load("res://VisualAssets/Materials/ScreenshotTakeMaterial.tres");
+			// cast(material.albedo_texture, ViewportTexture).viewport_path = new NodePath("TeleportToViewport");
+			// sst.set_surface_override_material(0, material);
+			// camera.add_child(sst);
+
+			// final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+			// sst.reset();
 		} else if(GameInput.isRightActionJustPressed()) {
 			final cameraForwardVector = -camera.get_global_transform().basis.z;
 			final velocityForward = get_velocity().normalized();
@@ -181,14 +192,28 @@ class Player extends CharacterBody3D {
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
 				} else {
-					velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 10.0);
-					velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 10.0);
+					// velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 10.0);
+					// velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 10.0);
+
+					// if(xzLength < 15.0) {
+					// 	xzLength += moveSpeed;
+					// }
+					xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * 15.0);
+					velocity.x = Math.cos(xzAngle) * xzLength;
+					velocity.z = Math.sin(xzAngle) * xzLength;
 				}
 			
 			}
-		} else {
-			velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 5.0);
-			velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 5.0);
+		} else if(is_on_floor()) {
+			// velocity.x = Godot.move_toward(velocity.x, 0.0, moveSpeed * 5.0);
+			// velocity.z = Godot.move_toward(velocity.z, 0.0, moveSpeed * 5.0);
+
+			final xzSpeed = new Vector2(velocity.x, velocity.z);
+			var xzLength = xzSpeed.length();
+			var xzAngle = xzSpeed.angle();
+			xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * 10.0);
+			velocity.x = Math.cos(xzAngle) * xzLength;
+			velocity.z = Math.sin(xzAngle) * xzLength;
 		}
 
 		set_velocity(velocity);

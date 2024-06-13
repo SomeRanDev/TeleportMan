@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cuhd58o6hwmh7"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_sx22u"]
+viewport_path = NodePath("TeleportToViewport")
+
+[resource]
+resource_local_to_scene = true
+depth_draw_mode = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_sx22u")
