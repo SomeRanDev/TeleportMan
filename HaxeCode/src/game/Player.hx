@@ -228,7 +228,7 @@ class Player extends CharacterBody3D {
 	}
 
 	function canMove() {
-		return !isFallingIntoNextLevel && initialFallSpot.x > -9998;
+		return (!isFallingIntoNextLevel && initialFallSpot.x > -9998) || hitGroundShake > 0.0;
 	}
 
 	function updateSpeedTracker(delta: Float) {
@@ -407,6 +407,7 @@ class Player extends CharacterBody3D {
 			// ON LEVEL START...
 			hitGroundShake = 1.0;
 			isFallingIntoNextLevel = false;
+			this.get_scene_node("ExitPortalPoint").queue_free();
 		}
 	}
 

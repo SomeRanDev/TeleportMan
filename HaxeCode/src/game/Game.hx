@@ -25,10 +25,12 @@ class Game extends Node3D {
 
 	public function goToNextLevel() {
 		currentLevel.position.x = -400;
+		currentLevel.name = "OldLevel";
 
 		final next = currentLevel.getNextLevel();
 		if(next != null) {
 			next.position.x = 0;
+			next.name = "CurrentLevel";
 
 			final player: Player = cast get_node("Player");
 			player.global_position = next.get_node_3d("ExitPortalPoint").global_position;

@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bw43qu5dvuwcj"]
+
+[ext_resource type="Shader" path="res://Code/Shaders/4PieceNoiseGradient.gdshader" id="1_i36x3"]
+[ext_resource type="Texture2D" uid="uid://c4dydubrmhsoj" path="res://VisualAssets/Aseprite/WallsTransition.aseprite" id="2_hu440"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_i36x3")
+shader_parameter/color1 = Color(0.109804, 0.0901961, 0.196078, 1)
+shader_parameter/color2 = Color(0.37, 0.185, 0.185, 1)
+shader_parameter/color3 = Color(0.109804, 0.0901961, 0.196078, 1)
+shader_parameter/color4 = Color(0.45, 0.45, 0.45, 1)
+shader_parameter/color1_threshold = 0.0
+shader_parameter/color2_threshold = 4.0
+shader_parameter/color3_threshold = 8.0
+shader_parameter/color4_threshold = 12.0
+shader_parameter/transition_space = 20.0
+shader_parameter/noise_texture = ExtResource("2_hu440")
