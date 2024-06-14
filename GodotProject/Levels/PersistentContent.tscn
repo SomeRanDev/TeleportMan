@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://c5w16oasxeujd"]
+[gd_scene load_steps=30 format=3 uid="uid://c5w16oasxeujd"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Game.gd" id="1_nlqod"]
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
@@ -17,6 +17,8 @@
 [ext_resource type="Shader" path="res://Code/Shaders/PostProcess.gdshader" id="14_jywg6"]
 [ext_resource type="ArrayMesh" uid="uid://bvohsdld0f7mr" path="res://VisualAssets/Blender/TransitionHole.res" id="16_du7py"]
 [ext_resource type="Script" path="res://addons/TeleportMan/NextLevelTrigger.gd" id="17_v4c2i"]
+[ext_resource type="ArrayMesh" uid="uid://dqpguio4ol28p" path="res://VisualAssets/Blender/TransitionExitHole.res" id="18_y57xk"]
+[ext_resource type="Material" uid="uid://cr6j6r6ga4s07" path="res://VisualAssets/Materials/Sides.tres" id="19_613dp"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
 
@@ -167,6 +169,12 @@ script = ExtResource("17_v4c2i")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TransitionHole/Area3D"]
 shape = SubResource("SphereShape3D_3cxb4")
+
+[node name="TransitionExitHole" type="MeshInstance3D" parent="TransitionHole"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+mesh = ExtResource("18_y57xk")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("19_613dp")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.0881818, -0.619886, 0.779721, 1.25483e-08, 0.782771, 0.62231, -0.996104, 0.0548765, -0.0690262, 0, 2.83213, 4.75453)
