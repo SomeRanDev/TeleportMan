@@ -10,7 +10,8 @@ class Player extends CharacterBody3D {
 	var camera: Camera3D;
 	var velocityDir: Node3D;
 
-	var cachedJumpInput = false;
+	var cachedJumpInput = 0.0;
+	var timeOffGround = 0.0;
 
 	var maxHorizontalAerialSpeed = 15.0;
 
@@ -122,8 +123,16 @@ class Player extends CharacterBody3D {
 			}
 		}
 
-		if(GameInput.isJumpJustPressed()) {
-			cachedJumpInput = true;
+		if(is_on_floor()) {
+			timeOffGround = 0.0;
+		} else {
+			timeOffGround += delta;
+		}
+
+		if(cachedJumpInput > 0.0) {
+			cachedJumpInput -= delta;
+		} else if(GameInput.isJumpJustPressed()) {
+			cachedJumpInput = 0.2;
 		}
 	}
 
@@ -132,7 +141,7 @@ class Player extends CharacterBody3D {
 	}
 
 	function canMove() {
-		return !isFallingIntoNextLevel;
+		return !isFallingIntoNextLevel && initialFallSpot.x > -9998;
 	}
 
 	public override function _physics_process(delta: Float) {
@@ -144,8 +153,9 @@ class Player extends CharacterBody3D {
 
 		updateCamera(delta);
 
-		if(cachedJumpInput && is_on_floor()) {
-			velocity.y = 7.0;
+		if(cachedJumpInput > 0.0 && timeOffGround < 0.2) {
+			velocity.y = Math.max(7.0, velocity.y + 7.0);
+			cachedJumpInput = 0.0;
 			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
 		}
 
@@ -210,7 +220,7 @@ class Player extends CharacterBody3D {
 						velocity.z = Math.sin(xzAngle) * xzLength;
 					}
 				} else {
-					final _xzAngle = Godot.rotate_toward(xzAngle, inputDirection, moveSpeed * 0.2);
+					final _xzAngle = Godot.rotate_toward(xzAngle, inputDirection, moveSpeed * 0.4);
 					velocity.x = Math.cos(_xzAngle) * xzLength;
 					velocity.z = Math.sin(_xzAngle) * xzLength;
 				}
@@ -284,7 +294,7 @@ class Player extends CharacterBody3D {
 
 		if(isFallingIntoNextLevel) {
 			final ratio = (global_position.y - initialFallSpot.y) / (targetFallSpot.y - initialFallSpot.y);
-			if(ratio < 0.5) {
+			if(ratio > 0.5) {
 				if(initialFallSpot.x < -9998) {
 					initialFallSpot.x = global_position.x;
 					initialFallSpot.z = global_position.z;
@@ -305,8 +315,6 @@ class Player extends CharacterBody3D {
 			// TODO: Shake
 			isFallingIntoNextLevel = false;
 		}
-
-		cachedJumpInput = false;
 	}
 
 	function updateCamera(delta: Float) {
