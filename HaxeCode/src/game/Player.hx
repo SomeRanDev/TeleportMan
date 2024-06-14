@@ -5,9 +5,11 @@ import godot.*;
 import game.Input.GameInput;
 
 using game.NodeHelpers;
+using game.MacroHelpers;
 
 class Player extends CharacterBody3D {
 	var camera: Camera3D;
+	var cameraController: Node3D;
 	var velocityDir: Node3D;
 
 	var cachedJumpInput = 0.0;
@@ -29,6 +31,17 @@ class Player extends CharacterBody3D {
 	var isFallingIntoNextLevel: Bool = false;
 	var targetFallSpot: Vector3;
 	var initialFallSpot: Vector3;
+	var hitGroundShake: Float = 0.0;
+
+	var respawnPosition: Vector3;
+
+	var isPerishing: Bool = false;
+	var perishAnimationTimer: Float = 0.0;
+	var transitionShader: ShaderMaterial;
+
+	var transitionInTimer: Float = 0.0;
+
+	var cameraShake: Float = 0.0;
 
 	static final MAX_HORIZONTAL_SPEED = 15.0;
 
@@ -40,12 +53,30 @@ class Player extends CharacterBody3D {
 		isFallingIntoNextLevel = true;
 		targetFallSpot = location;
 		initialFallSpot = new Vector3(-9999, global_position.y, 0);
+		setRespawnPosition(location);
+	}
+
+	public function setRespawnPosition(location: Vector3) {
+		respawnPosition = location;
+	}
+
+	public function start(spawnLocation: Vector3) {
+		global_position = spawnLocation;
+		setRespawnPosition(spawnLocation);
+
+		transitionShader.set_shader_parameter("animationRatio", 1.0);
+		transitionShader.set_shader_parameter("animationMode", 1.0);
+		transitionInTimer = 1.0;
 	}
 
 	public override function _ready() {
 		gravity = 20;
 		camera = cast get_node("CameraController/Camera3D");
+		cameraController = cast get_node("CameraController");
 		velocityDir = cast get_node("CameraController/Camera3D/VelocityDir");
+
+		final transitionObject = this.get_persistent_node("Transition").as(ColorRect);
+		transitionShader = transitionObject.get_material().as(ShaderMaterial);
 
 		GameInput.init();
 	}
@@ -74,8 +105,64 @@ class Player extends CharacterBody3D {
 		}
 	}
 
+	function updateCameraShake() {
+		if(cameraShake > 0.0) {
+			//final cameraController = get_node("CameraController").as(Node3D);
+			camera.position = new Vector3(
+					Math.sin(Time.get_ticks_msec() * 0.05) * 0.333,
+					Math.cos(Time.get_ticks_msec() * 0.09) * 0.645,
+					0.0
+				) * cameraShake;
+		}
+	}
+
+	function resetCameraPosition() {
+		camera.position = Vector3.ZERO;
+	}
+
 	public override function _process(delta: Float) {
 		GameInput.update();
+
+		if(isPerishing) {
+			velocity = Vector3.ZERO;
+			global_position.y -= delta * 0.8;
+
+			perishAnimationTimer += delta * 0.5;
+			cameraShake = perishAnimationTimer * 1.0;
+			transitionShader.set_shader_parameter("animationRatio", Math.min(1.0, perishAnimationTimer * perishAnimationTimer));
+
+			if(perishAnimationTimer >= 1.0) {
+				isPerishing = false;
+				perishAnimationTimer = 0.0;
+				global_position = respawnPosition;
+				transitionShader.set_shader_parameter("animationRatio", 1.0);
+				transitionShader.set_shader_parameter("animationMode", 1.0);
+				transitionInTimer = 1.0;
+				cameraShake = 0.0;
+				resetCameraPosition();
+			}
+
+			updateCameraShake();
+			updateSpeedTracker(delta);
+			return;
+		}
+
+		if(transitionInTimer > 0.0) {
+			transitionInTimer -= delta * 1.0;
+			if(transitionInTimer < 0.0) transitionInTimer = 0.0;
+			transitionShader.set_shader_parameter("animationRatio", transitionInTimer*transitionInTimer*transitionInTimer);
+		}
+
+		if(hitGroundShake > 0.0) {
+			hitGroundShake -= delta * 3.0;
+			if(hitGroundShake < 0.0) {
+				hitGroundShake = 0.0;
+				resetCameraPosition();
+			}
+			cameraShake = hitGroundShake;
+		}
+
+		updateCameraShake();
 
 		if(GameInput.isLeftActionJustPressed()) {
 			final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
@@ -144,7 +231,39 @@ class Player extends CharacterBody3D {
 		return !isFallingIntoNextLevel && initialFallSpot.x > -9998;
 	}
 
+	function updateSpeedTracker(delta: Float) {
+		final tracker = this.get_persistent_node("SpeedArrow/SpeedTrackerBase").as(Node3D);
+		final scaler = this.get_persistent_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler").as(Node3D);
+		final speedArrowViewport = this.get_persistent_node("SpeedArrowViewport").as(Sprite2D);
+
+		final velocityForward = get_velocity().normalized();
+		final speed = get_velocity().length();
+
+		cast(speedArrowViewport.get_material(), ShaderMaterial).set_shader_parameter("opacity", (speed / 8.0).clamp(0.0, 1.0));
+		scaler.set_scale(new Vector3(1.0, 1.0, (speed - 3.0) / MAX_HORIZONTAL_SPEED) * 0.5);
+		scaler.set_visible(speed > 0.0001);
+
+		if(speed > 0.0) {
+			if(velocityForward.is_equal_approx(Vector3.UP)) {
+				velocityDir.set_global_rotation_degrees(new Vector3(90, 0, 0));
+			} else if(velocityForward.is_equal_approx(Vector3.DOWN)) {
+				velocityDir.set_global_rotation_degrees(new Vector3(-90, 0, 0));
+			} else {
+				velocityDir.look_at(velocityDir.get_global_transform().origin + velocityForward, Vector3.UP);
+			}
+		}
+
+		tracker.set_global_rotation(tracker.get_global_rotation().lerp_angle_vec3(velocityDir.get_rotation(), 10.0 * delta));
+
+		this.get_persistent_node("SpeedLabel").as(Label).text = Std.string(Math.floor(velocity.length() * 10.0));
+	}
+
 	public override function _physics_process(delta: Float) {
+		if(isPerishing) {
+			updateCamera(delta);
+			return;
+		}
+
 		final velocity = get_velocity();
 
 		if(!is_on_floor()) {
@@ -165,32 +284,6 @@ class Player extends CharacterBody3D {
 			new Vector2(0, 0);
 		}
 		final direction = inputDir.rotated(-mouseRotation.y);
-
-		{
-			final tracker: Node3D = cast this.get_persistent_node("SpeedArrow/SpeedTrackerBase");
-			final scaler: Node3D = cast this.get_persistent_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
-			final speedArrowViewport: Sprite2D = cast this.get_persistent_node("SpeedArrowViewport");
-			
-
-			final velocityForward = get_velocity().normalized();
-			final speed = get_velocity().length();
-
-			cast(speedArrowViewport.get_material(), ShaderMaterial).set_shader_parameter("opacity", (speed / 8.0).clamp(0.0, 1.0));
-			scaler.set_scale(new Vector3(1.0, 1.0, (speed - 3.0) / MAX_HORIZONTAL_SPEED) * 0.5);
-			scaler.set_visible(speed > 0.0001);
-
-			if(speed > 0.0) {
-				if(velocityForward.is_equal_approx(Vector3.UP)) {
-					velocityDir.set_global_rotation_degrees(new Vector3(90, 0, 0));
-				} else if(velocityForward.is_equal_approx(Vector3.DOWN)) {
-					velocityDir.set_global_rotation_degrees(new Vector3(-90, 0, 0));
-				} else {
-					velocityDir.look_at(velocityDir.get_global_transform().origin + velocityForward, Vector3.UP);
-				}
-			}
-
-			tracker.set_global_rotation(tracker.get_global_rotation().lerp_angle_vec3(velocityDir.get_rotation(), 10.0 * delta));
-		}
 
 		final SPEED = 5.0;
 		var moveSpeed = delta * (Input.is_key_pressed(KEY_SHIFT) ? (SPEED * 5.0) : SPEED);
@@ -290,7 +383,7 @@ class Player extends CharacterBody3D {
 			velocity.z = Math.sin(xzAngle) * xzLength;
 		}
 
-		cast(this.get_persistent_node("SpeedLabel"), Label).text = Std.string(Math.floor(velocity.length() * 10.0));
+		updateSpeedTracker(delta);
 
 		if(isFallingIntoNextLevel) {
 			final ratio = (global_position.y - initialFallSpot.y) / (targetFallSpot.y - initialFallSpot.y);
@@ -312,7 +405,7 @@ class Player extends CharacterBody3D {
 
 		if(isFallingIntoNextLevel && is_on_floor()) {
 			// ON LEVEL START...
-			// TODO: Shake
+			hitGroundShake = 1.0;
 			isFallingIntoNextLevel = false;
 		}
 	}
@@ -329,12 +422,23 @@ class Player extends CharacterBody3D {
 	}
 
 	function updateCameraRotation() {
-		final transform = camera.get_transform();
+		final transform = cameraController.get_transform();
 		transform.basis = untyped __gdscript__("Basis.from_euler({0})", mouseRotation);
-		camera.set_transform(transform);
+		cameraController.set_transform(transform);
 
-		final rotation = camera.get_rotation();
+		final rotation = cameraController.get_rotation();
 		rotation.z = 0.0;
-		camera.set_rotation(rotation);
+		cameraController.set_rotation(rotation);
+	}
+
+	public function perishByLava() {
+		isPerishing = true;
+		perishAnimationTimer = 0.0;
+
+		transitionShader.set_shader_parameter("animationMode", 0.0);
+		transitionShader.set_shader_parameter("animationRatio", 0.0);
+		transitionShader.set_shader_parameter("transitionInType",
+			((transitionShader.get_shader_parameter("transitionInType") : Int) + Godot.randi_range(1, 2)) % 3
+		);
 	}
 }

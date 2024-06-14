@@ -1,15 +1,23 @@
 shader_type spatial;
-render_mode unshaded;
+render_mode unshaded, world_vertex_coords;
 
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_nearest_mipmap;
 
 uniform float effectOpacity;
 
+varying vec3 pos;
+
 void vertex() {
 	POSITION = vec4(VERTEX.xy, 1.0, 1.0);
+	pos = VERTEX;
 }
 
 void fragment() {
+	if(pos.y <= -35.0) {
+		ALBEDO = vec3(1.0, 0.0, 0.0);
+		ALPHA = 1.0;
+	} else {
+	
 	vec4 sceneColor = texture(SCREEN_TEXTURE, SCREEN_UV);
 	float sceneRed = sceneColor.r;
 	
@@ -47,6 +55,8 @@ void fragment() {
 		}
 	}
 	ALPHA = 1.0;
+	
+	}
 
 	//.rgb;
 	//ALPHA = 0.0;

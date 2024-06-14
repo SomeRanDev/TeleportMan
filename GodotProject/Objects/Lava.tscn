@@ -1,0 +1,36 @@
+[gd_scene load_steps=8 format=3 uid="uid://0ihr8jm7ejga"]
+
+[ext_resource type="Material" uid="uid://l46llrjkwx2h" path="res://VisualAssets/Materials/Lava.tres" id="1_mrtrg"]
+[ext_resource type="Script" path="res://addons/TeleportMan/ShiftingNoiseTexture.gd" id="2_yhtwu"]
+[ext_resource type="Script" path="res://addons/TeleportMan/UnaliveBox.gd" id="3_mnjfg"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_c2g52"]
+size = Vector2(130, 130)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i3o4b"]
+size = Vector3(110, 10, 110)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_xg5bt"]
+size = Vector2(120, 120)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u73j4"]
+albedo_color = Color(1, 0, 0, 1)
+
+[node name="Lava" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -35, 0)
+mesh = SubResource("PlaneMesh_c2g52")
+surface_material_override/0 = ExtResource("1_mrtrg")
+script = ExtResource("2_yhtwu")
+speed = Vector3(10, 0, 10)
+
+[node name="UnaliveBox" type="Area3D" parent="."]
+script = ExtResource("3_mnjfg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="UnaliveBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, 0)
+shape = SubResource("BoxShape3D_i3o4b")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+mesh = SubResource("PlaneMesh_xg5bt")
+surface_material_override/0 = SubResource("StandardMaterial3D_u73j4")

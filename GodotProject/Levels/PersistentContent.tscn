@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://c5w16oasxeujd"]
+[gd_scene load_steps=35 format=3 uid="uid://c5w16oasxeujd"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Game.gd" id="1_nlqod"]
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
@@ -19,8 +19,11 @@
 [ext_resource type="Script" path="res://addons/TeleportMan/NextLevelTrigger.gd" id="17_v4c2i"]
 [ext_resource type="ArrayMesh" uid="uid://dqpguio4ol28p" path="res://VisualAssets/Blender/TransitionExitHole.res" id="18_y57xk"]
 [ext_resource type="Material" uid="uid://cr6j6r6ga4s07" path="res://VisualAssets/Materials/Sides.tres" id="19_613dp"]
+[ext_resource type="Shader" path="res://Code/Shaders/UnaliveAnimation.gdshader" id="20_5cesa"]
+[ext_resource type="Texture2D" uid="uid://bqx6as414xdp0" path="res://VisualAssets/TexturesAndSprites/HaxeJamLogo.aseprite" id="21_3v6xt"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
+radius = 0.45
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vufq0"]
 shader = ExtResource("5_po44y")
@@ -54,6 +57,27 @@ ambient_light_energy = 0.5
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_3cxb4"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_egelv"]
+noise_type = 3
+domain_warp_enabled = true
+domain_warp_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_wckt8"]
+width = 576
+height = 324
+seamless = true
+noise = SubResource("FastNoiseLite_egelv")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pmt1u"]
+shader = ExtResource("20_5cesa")
+shader_parameter/animationMode = 1
+shader_parameter/animationRatio = 0.635
+shader_parameter/startColor = Color(1, 0.329412, 0.25098, 1)
+shader_parameter/endColor = Color(1, 0.8625, 0.25, 1)
+shader_parameter/transitionInType = 0
+shader_parameter/noise = SubResource("NoiseTexture2D_wckt8")
+shader_parameter/mask = ExtResource("21_3v6xt")
+
 [node name="PersistentContent" type="Node3D"]
 script = ExtResource("1_nlqod")
 firstLevelName = "Level1"
@@ -66,9 +90,9 @@ script = ExtResource("1_x4iy1")
 shape = SubResource("CapsuleShape3D_ee1mi")
 
 [node name="CameraController" type="Node3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.667, -0.25)
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraController"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.667364, -0.37835)
 current = true
 
 [node name="VelocityDir" type="Node3D" parent="Player/CameraController/Camera3D"]
@@ -178,3 +202,11 @@ surface_material_override/0 = ExtResource("19_613dp")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.0881818, -0.619886, 0.779721, 1.25483e-08, 0.782771, 0.62231, -0.996104, 0.0548765, -0.0690262, 0, 2.83213, 4.75453)
+
+[node name="Transition" type="ColorRect" parent="."]
+z_index = -10
+material = SubResource("ShaderMaterial_pmt1u")
+offset_right = 1152.0
+offset_bottom = 648.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

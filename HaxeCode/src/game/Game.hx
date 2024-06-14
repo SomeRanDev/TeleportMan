@@ -18,7 +18,7 @@ class Game extends Node3D {
 		currentLevel.name = "CurrentLevel";
 		add_child(currentLevel);
 
-		this.get_node_3d("Player").global_position = this.get_scene_node("PlayerStart").as(Node3D).global_position;
+		this.get_node_3d("Player").as(Player).start(this.get_scene_node("PlayerStart").as(Node3D).global_position);
 
 		currentLevel.onPlayerOccupy();
 	}

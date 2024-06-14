@@ -42,6 +42,10 @@ vec3 mix_noise2(vec3 col1, vec3 col2, float x, float ratio) {
 }
 
 void fragment() {
+	if(pos.y <= -35.0) {
+		ALBEDO = vec3(1.0, 0.0, 0.0);
+	} else {
+	
 	float dist_squared = pos.x*pos.x + pos.z*pos.z;
 	float angle;
 	float x = floor(pos.x * 4.0) / 4.0;
@@ -104,4 +108,6 @@ void fragment() {
 	}
 
 	ALBEDO = result;
+	
+	}
 }
