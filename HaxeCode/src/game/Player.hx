@@ -25,10 +25,20 @@ class Player extends CharacterBody3D {
 	var storedMouseRotation: Vector3;
 	var storedCameraForward: Vector3;
 
+	var isFallingIntoNextLevel: Bool = false;
+	var targetFallSpot: Vector3;
+	var initialFallSpot: Vector3;
+
 	static final MAX_HORIZONTAL_SPEED = 15.0;
 
 	public function getCamera(): Camera3D {
 		return camera;
+	}
+
+	public function setTargetFallingSpot(location: Vector3) {
+		isFallingIntoNextLevel = true;
+		targetFallSpot = location;
+		initialFallSpot = new Vector3(-9999, global_position.y, 0);
 	}
 
 	public override function _ready() {
@@ -121,6 +131,10 @@ class Player extends CharacterBody3D {
 		return new Vector2(velocity.x, velocity.z);
 	}
 
+	function canMove() {
+		return !isFallingIntoNextLevel;
+	}
+
 	public override function _physics_process(delta: Float) {
 		final velocity = get_velocity();
 
@@ -135,7 +149,11 @@ class Player extends CharacterBody3D {
 			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
 		}
 
-		final inputDir = new Vector2(GameInput.getMoveXAxis(delta), GameInput.getMoveYAxis(delta)).normalized();
+		final inputDir = if(canMove()) {
+			new Vector2(GameInput.getMoveXAxis(delta), GameInput.getMoveYAxis(delta)).normalized();
+		} else {
+			new Vector2(0, 0);
+		}
 		final direction = inputDir.rotated(-mouseRotation.y);
 
 		{
@@ -264,8 +282,29 @@ class Player extends CharacterBody3D {
 
 		cast(this.get_persistent_node("SpeedLabel"), Label).text = Std.string(Math.floor(velocity.length() * 10.0));
 
+		if(isFallingIntoNextLevel) {
+			final ratio = (global_position.y - initialFallSpot.y) / (targetFallSpot.y - initialFallSpot.y);
+			if(ratio < 0.5) {
+				if(initialFallSpot.x < -9998) {
+					initialFallSpot.x = global_position.x;
+					initialFallSpot.z = global_position.z;
+				}
+				final r = (ratio - 0.5) / 0.5;
+				final x = Godot.lerp(initialFallSpot.x, targetFallSpot.x, r);
+				final z = Godot.lerp(initialFallSpot.z, targetFallSpot.z, r);
+				global_position.x = x;
+				global_position.z = z;
+			}
+		}
+
 		set_velocity(velocity);
 		move_and_slide();
+
+		if(isFallingIntoNextLevel && is_on_floor()) {
+			// ON LEVEL START...
+			// TODO: Shake
+			isFallingIntoNextLevel = false;
+		}
 
 		cachedJumpInput = false;
 	}

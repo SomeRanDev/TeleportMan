@@ -13,7 +13,7 @@ class NextLevelTrigger extends Area3D {
 
 	public override function _process(delta: Float) {
 		if(player != null) {
-			if(player.getCamera().global_position.y < global_position.y) {
+			if(player.getCamera().global_position.y < global_position.y + 1.0) {
 				this.get_game_node().goToNextLevel();
 				player = null;
 			}
@@ -22,9 +22,9 @@ class NextLevelTrigger extends Area3D {
 
 	public function on_body_entered(body: Node3D) {
 		if(body.name == "Player") {
-			//player = cast body;
-			this.get_game_node().goToNextLevel();
-			player = null;
+			player = cast body;
+			// this.get_game_node().goToNextLevel();
+			// player = null;
 		}
 	}
 }
