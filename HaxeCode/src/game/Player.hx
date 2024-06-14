@@ -4,6 +4,8 @@ import godot.*;
 
 import game.Input.GameInput;
 
+using game.NodeHelpers;
+
 class Player extends CharacterBody3D {
 	var camera: Camera3D;
 	var velocityDir: Node3D;
@@ -25,14 +27,16 @@ class Player extends CharacterBody3D {
 
 	static final MAX_HORIZONTAL_SPEED = 15.0;
 
+	public function getCamera(): Camera3D {
+		return camera;
+	}
+
 	public override function _ready() {
 		gravity = 20;
 		camera = cast get_node("CameraController/Camera3D");
 		velocityDir = cast get_node("CameraController/Camera3D/VelocityDir");
 
 		GameInput.init();
-
-		global_position = cast(get_scene_node("PlayerStart"), Node3D).global_position;
 	}
 
 	public override function _unhandled_input(event: InputEvent) {
@@ -59,19 +63,11 @@ class Player extends CharacterBody3D {
 		}
 	}
 
-	function get_scene_node(path: String): Node {
-		return get_tree().get_current_scene().get_node(path);
-	}
-
-	function get_persistent_node(path: String): Node {
-		return get_scene_node("PersistentContent/" + path);
-	}
-
 	public override function _process(delta: Float) {
 		GameInput.update();
 
 		if(GameInput.isLeftActionJustPressed()) {
-			final teleportToCamera: Node3D = cast get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
+			final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
 			teleportToCamera.set_global_transform(camera.get_global_transform());
 
 			storedPosition = get_global_position();
@@ -143,9 +139,9 @@ class Player extends CharacterBody3D {
 		final direction = inputDir.rotated(-mouseRotation.y);
 
 		{
-			final tracker: Node3D = cast get_persistent_node("SpeedArrow/SpeedTrackerBase");
-			final scaler: Node3D = cast get_persistent_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
-			final speedArrowViewport: Sprite2D = cast get_persistent_node("SpeedArrowViewport");
+			final tracker: Node3D = cast this.get_persistent_node("SpeedArrow/SpeedTrackerBase");
+			final scaler: Node3D = cast this.get_persistent_node("SpeedArrow/SpeedTrackerBase/SpeedTrackerScaler");
+			final speedArrowViewport: Sprite2D = cast this.get_persistent_node("SpeedArrowViewport");
 			
 
 			final velocityForward = get_velocity().normalized();
@@ -266,7 +262,7 @@ class Player extends CharacterBody3D {
 			velocity.z = Math.sin(xzAngle) * xzLength;
 		}
 
-		cast(get_persistent_node("SpeedLabel"), Label).text = Std.string(Math.floor(velocity.length() * 10.0));
+		cast(this.get_persistent_node("SpeedLabel"), Label).text = Std.string(Math.floor(velocity.length() * 10.0));
 
 		set_velocity(velocity);
 		move_and_slide();

@@ -7,9 +7,9 @@
 render_priority = 0
 shader = ExtResource("1_j47ek")
 shader_parameter/color1 = Color(0.109804, 0.0901961, 0.196078, 1)
-shader_parameter/color2 = Color(0.37, 0.37, 0.37, 1)
+shader_parameter/color2 = Color(0.35, 0.2695, 0.2695, 1)
 shader_parameter/color3 = Color(0.109804, 0.0901961, 0.196078, 1)
-shader_parameter/color4 = Color(0.9, 0.9, 0.9, 1)
+shader_parameter/color4 = Color(0.65, 0.65, 0.65, 1)
 shader_parameter/color1_threshold = 0.0
 shader_parameter/color2_threshold = 1.0
 shader_parameter/color3_threshold = 2.0

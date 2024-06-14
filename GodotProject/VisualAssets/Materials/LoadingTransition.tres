@@ -1,0 +1,12 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cegj2hqyxu4dw"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_7cr3a"]
+resource_local_to_scene = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_xrk1p"]
+resource_local_to_scene = true
+seamless = true
+noise = SubResource("FastNoiseLite_7cr3a")
+
+[resource]
+albedo_texture = SubResource("NoiseTexture2D_xrk1p")

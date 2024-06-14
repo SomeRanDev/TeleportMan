@@ -1,5 +1,6 @@
-[gd_scene load_steps=24 format=3 uid="uid://c5w16oasxeujd"]
+[gd_scene load_steps=28 format=3 uid="uid://c5w16oasxeujd"]
 
+[ext_resource type="Script" path="res://addons/TeleportMan/Game.gd" id="1_nlqod"]
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
 [ext_resource type="ArrayMesh" uid="uid://k2s5pmgfe3n" path="res://VisualAssets/Meshes/ScreenSaveAnimation/ScreenSave001.obj" id="2_y02ik"]
 [ext_resource type="Material" uid="uid://cuhd58o6hwmh7" path="res://VisualAssets/Materials/ScreenshotTakeMaterial.tres" id="3_tek3s"]
@@ -14,6 +15,8 @@
 [ext_resource type="Material" uid="uid://66edy12coxqd" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor3.tres" id="12_ocih4"]
 [ext_resource type="Material" uid="uid://bwg4thvd3fqqr" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor4.tres" id="13_dmwbh"]
 [ext_resource type="Shader" path="res://Code/Shaders/PostProcess.gdshader" id="14_jywg6"]
+[ext_resource type="ArrayMesh" uid="uid://bvohsdld0f7mr" path="res://VisualAssets/Blender/TransitionHole.res" id="16_du7py"]
+[ext_resource type="Script" path="res://addons/TeleportMan/NextLevelTrigger.gd" id="17_v4c2i"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
 
@@ -39,6 +42,7 @@ size = Vector2(2, 2)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ttqsk"]
 render_priority = 0
 shader = ExtResource("14_jywg6")
+shader_parameter/effectOpacity = 1.0
 
 [sub_resource type="Environment" id="Environment_pisio"]
 background_mode = 1
@@ -46,10 +50,11 @@ ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.5
 
-[node name="PersistentContent" type="Node3D"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_3cxb4"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.782771, 0.62231, 0, -0.62231, 0.782771, 0, 2.83213, 4.75453)
+[node name="PersistentContent" type="Node3D"]
+script = ExtResource("1_nlqod")
+firstLevelName = "Level1"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
@@ -91,6 +96,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.68046, 3.13912)
 cull_mask = 1048573
 
 [node name="TeleportToTexture" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(997.067, 553.6)
 scale = Vector2(0.257407, 0.257407)
 texture = ExtResource("7_47xf7")
@@ -151,3 +157,16 @@ offset_right = 206.0
 offset_bottom = 163.0
 theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
+
+[node name="TransitionHole" type="MeshInstance3D" parent="."]
+extra_cull_margin = 16384.0
+mesh = ExtResource("16_du7py")
+
+[node name="Area3D" type="Area3D" parent="TransitionHole"]
+script = ExtResource("17_v4c2i")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TransitionHole/Area3D"]
+shape = SubResource("SphereShape3D_3cxb4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.0881818, -0.619886, 0.779721, 1.25483e-08, 0.782771, 0.62231, -0.996104, 0.0548765, -0.0690262, 0, 2.83213, 4.75453)
