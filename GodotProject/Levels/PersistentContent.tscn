@@ -84,6 +84,7 @@ firstLevelName = "Level5"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
+floor_snap_length = 0.3
 script = ExtResource("1_x4iy1")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]

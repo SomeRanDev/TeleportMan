@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://bkolxb3m5qc2u"
-path="res://.godot/imported/Level6.blend-b8e836ccd649de7d76a7d33f81e49cc3.scn"
+path="res://.godot/imported/Level8.blend-5765b88772f3e39248f8b5205038905c.scn"
 
 [deps]
 
-source_file="res://VisualAssets/Blender/Level6.blend"
-dest_files=["res://.godot/imported/Level6.blend-b8e836ccd649de7d76a7d33f81e49cc3.scn"]
+source_file="res://VisualAssets/Blender/Level8.blend"
+dest_files=["res://.godot/imported/Level8.blend-5765b88772f3e39248f8b5205038905c.scn"]
 
 [params]
 
@@ -51,14 +51,14 @@ _subresources={
 }
 },
 "meshes": {
-"Level6_Cylinder_001": {
+"Level8_Cylinder_001": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://VisualAssets/Blender/Level6/Maze.res"
+"save_to_file/path": "res://VisualAssets/Blender/Level8/Maze.res"
 }
 }
 }

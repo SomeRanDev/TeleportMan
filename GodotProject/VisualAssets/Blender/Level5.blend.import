@@ -32,6 +32,24 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
+"materials": {
+"Grass": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Grass.tres"
+},
+"Invisible": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Invisible.tres"
+},
+"Rails": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Rail.tres"
+},
+"Sides": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Sides.tres"
+}
+},
 "meshes": {
 "Level5_Cube": {
 "generate/lightmap_uv": 0,
