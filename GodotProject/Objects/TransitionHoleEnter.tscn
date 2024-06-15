@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cqtqtsfgifup0"]
+
+[ext_resource type="Material" uid="uid://cscqji2a11epq" path="res://VisualAssets/Materials/TransitionHoleGlow.tres" id="1_vol5l"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0xyk0"]
+top_radius = 10.0
+bottom_radius = 0.95
+height = 10.0
+
+[node name="TransitionHole" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.009, -32.536, -28.224)
+
+[node name="TransitionHoleGlow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.6, 0)
+mesh = SubResource("CylinderMesh_0xyk0")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("1_vol5l")

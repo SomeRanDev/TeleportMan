@@ -297,7 +297,10 @@ class Player extends CharacterBody3D {
 
 				final speedVsDirection = Math.abs(Godot.angle_difference(xzAngle, inputDirection));
 
-				if(speedVsDirection > Math.PI * 0.5) {
+				if(xzLength < 3.0) {
+					velocity.x += direction.x * moveSpeed * 10.0;
+					velocity.z += direction.y * moveSpeed * 10.0;
+				} else if(speedVsDirection > Math.PI * 0.5) {
 					velocity.x += direction.x * moveSpeed * 4.0;
 					velocity.z += direction.y * moveSpeed * 4.0;
 
@@ -413,7 +416,7 @@ class Player extends CharacterBody3D {
 
 	function updateCamera(delta: Float) {
 		mouseRotation.x += tiltInput * delta;
-		mouseRotation.x = mouseRotation.x.clamp(Math.PI * -0.4, Math.PI * 0.4);
+		mouseRotation.x = mouseRotation.x.clamp(Math.PI * -0.47, Math.PI * 0.47);
 		mouseRotation.y += rotationInput * delta;
 
 		updateCameraRotation();
