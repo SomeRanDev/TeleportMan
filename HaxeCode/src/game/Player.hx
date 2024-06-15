@@ -44,6 +44,7 @@ class Player extends CharacterBody3D {
 	var cameraShake: Float = 0.0;
 
 	static final MAX_HORIZONTAL_SPEED = 15.0;
+	static final INFINITE_JUMPS = true;
 
 	public function getCamera(): Camera3D {
 		return camera;
@@ -266,13 +267,13 @@ class Player extends CharacterBody3D {
 
 		final velocity = get_velocity();
 
-		if(!is_on_floor()) {
+		if(!is_on_floor() && velocity.y > -60.0) {
 			velocity.y -= gravity * delta;
 		}
 
 		updateCamera(delta);
 
-		if(cachedJumpInput > 0.0 && timeOffGround < 0.2) {
+		if(cachedJumpInput > 0.0 && (INFINITE_JUMPS || timeOffGround < 0.2)) {
 			velocity.y = Math.max(7.0, velocity.y + 7.0);
 			cachedJumpInput = 0.0;
 			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
@@ -410,7 +411,6 @@ class Player extends CharacterBody3D {
 			// ON LEVEL START...
 			hitGroundShake = 1.0;
 			isFallingIntoNextLevel = false;
-			//this.get_scene_node("ExitPortalPoint").queue_free();
 		}
 	}
 

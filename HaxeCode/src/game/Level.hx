@@ -20,7 +20,7 @@ class Level extends Node3D {
 	public override function _process(delta: Float) {
 		if(nextLevelInst != null) {
 			final portalCamera: Camera3D = cast nextLevelInst.get_node("BasePortalViewport/PortalCamera");
-			final exportPortalPoint: Node3D = cast nextLevelInst.get_node("ExitPortalPoint");
+			final exportPortalPoint: Node3D = cast nextLevelInst.get_node("PlayerStart/ExitPortalPoint");
 			final transitionHole: Node3D = cast this.get_node("../TransitionHole");
 			final player: Player = cast this.get_persistent_node("Player");
 
@@ -39,7 +39,7 @@ class Level extends Node3D {
 		get_tree().get_current_scene().add_child(nextLevelInst);
 
 		get_node("BasePortalViewport").queue_free();
-		get_node("ExitPortalPoint").queue_free();
+		get_node("PlayerStart/ExitPortalPoint").queue_free();
 
 		final hole: MeshInstance3D = cast get_node("../TransitionHole");
 		hole.global_transform = cast(get_node("TransitionHole"), Node3D).global_transform;

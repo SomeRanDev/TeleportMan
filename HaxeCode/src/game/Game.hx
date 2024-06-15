@@ -36,7 +36,7 @@ class Game extends Node3D {
 			next.name = "CurrentLevel";
 
 			final player: Player = cast get_node("Player");
-			player.global_position = next.get_node_3d("ExitPortalPoint").global_position;
+			player.global_position = next.get_node_3d("PlayerStart/ExitPortalPoint").global_position;
 			player.setTargetFallingSpot(next.get_node_3d("PlayerStart").global_position);
 			next.onPlayerOccupy();
 			currentLevel = next;

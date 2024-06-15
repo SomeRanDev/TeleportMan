@@ -8,5 +8,5 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	global_position = base_pos + Vector3(sin(Time.get_ticks_msec() * 0.001) * 5.0, 0, 0);

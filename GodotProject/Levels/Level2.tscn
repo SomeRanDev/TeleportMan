@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://bykw53rj0yjrg"]
+[gd_scene load_steps=14 format=3 uid="uid://bykw53rj0yjrg"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Level.gd" id="1_py3wt"]
 [ext_resource type="ArrayMesh" uid="uid://depwhqpasspq8" path="res://VisualAssets/Blender/InverseCylinderWithTop.res" id="5_nall3"]
 [ext_resource type="Material" uid="uid://bw43qu5dvuwcj" path="res://VisualAssets/Materials/Level2_Walls.tres" id="6_4fbcx"]
+[ext_resource type="Script" path="res://addons/TeleportMan/PlayerStart.gd" id="6_icbie"]
 [ext_resource type="ArrayMesh" uid="uid://cj8vga70xiccw" path="res://VisualAssets/Blender/Level2/Level2_1.res" id="8_mnt8d"]
 [ext_resource type="PackedScene" uid="uid://cqtqtsfgifup0" path="res://Objects/TransitionHoleEnter.tscn" id="9_63g5j"]
 [ext_resource type="ArrayMesh" uid="uid://bx6jlycg4mnhr" path="res://VisualAssets/Blender/Level2/Level2_2.res" id="9_jo4yo"]
@@ -57,21 +58,22 @@ shape = SubResource("ConcavePolygonShape3D_d3nu4")
 
 [node name="PlayerStart" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.181, -18.2715, 3.835)
+script = ExtResource("6_icbie")
+
+[node name="ExitPortalPoint" type="Node3D" parent="PlayerStart"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 108.271, 0)
+
+[node name="TransitionExitHole" type="MeshInstance3D" parent="PlayerStart/ExitPortalPoint"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+mesh = ExtResource("13_2pfof")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("10_sn3a1")
 
 [node name="BasePortalViewport" type="SubViewport" parent="."]
 size = Vector2i(1152, 648)
 
 [node name="PortalCamera" type="Camera3D" parent="BasePortalViewport"]
 cull_mask = 1048573
-
-[node name="ExitPortalPoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.181, 90, 3.835)
-
-[node name="TransitionExitHole" type="MeshInstance3D" parent="ExitPortalPoint"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-mesh = ExtResource("13_2pfof")
-skeleton = NodePath("../..")
-surface_material_override/0 = ExtResource("10_sn3a1")
 
 [node name="Lava" parent="." instance=ExtResource("13_yy2l5")]
 

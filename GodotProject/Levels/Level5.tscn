@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dl088eeg5f65j"]
+[gd_scene load_steps=19 format=3 uid="uid://dl088eeg5f65j"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Level.gd" id="1_pq5vp"]
 [ext_resource type="ArrayMesh" uid="uid://depwhqpasspq8" path="res://VisualAssets/Blender/InverseCylinderWithTop.res" id="2_8kdeq"]
@@ -6,6 +6,7 @@
 [ext_resource type="ArrayMesh" uid="uid://cyqsyynefffro" path="res://VisualAssets/Blender/Level5/Start.res" id="4_fw3yt"]
 [ext_resource type="ArrayMesh" uid="uid://lqbnbedlwrwi" path="res://VisualAssets/Blender/Level5/Plate.res" id="5_p8koc"]
 [ext_resource type="ArrayMesh" uid="uid://ucidfjbt61v1" path="res://VisualAssets/Blender/Level5/Goal.res" id="6_bj3au"]
+[ext_resource type="Script" path="res://addons/TeleportMan/PlayerStart.gd" id="7_mw1a0"]
 [ext_resource type="ArrayMesh" uid="uid://dqpguio4ol28p" path="res://VisualAssets/Blender/TransitionExitHole.res" id="8_gl5ch"]
 [ext_resource type="Material" uid="uid://cr6j6r6ga4s07" path="res://VisualAssets/Materials/Sides.tres" id="9_77o7l"]
 [ext_resource type="PackedScene" uid="uid://cqtqtsfgifup0" path="res://Objects/TransitionHoleEnter.tscn" id="9_cn0kg"]
@@ -33,7 +34,7 @@ data = PackedVector3Array(0, 1, 4.25, 0.4166, 1, 4.2295, 0, 0.6, 4.375, 0.4166, 
 
 [node name="Level5" type="Node3D"]
 script = ExtResource("1_pq5vp")
-nextLevelName = "Level2"
+nextLevelName = "Level6"
 
 [node name="LevelWalls" type="MeshInstance3D" parent="."]
 transform = Transform3D(60, 0, 0, 0, 40, 0, 0, 0, 60, 0, 2.95691, 3.1983)
@@ -80,21 +81,22 @@ shape = SubResource("ConcavePolygonShape3D_vfdob")
 
 [node name="PlayerStart" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -30, -10)
+script = ExtResource("7_mw1a0")
+
+[node name="ExitPortalPoint" type="Node3D" parent="PlayerStart"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 120, 0)
+
+[node name="TransitionExitHole" type="MeshInstance3D" parent="PlayerStart/ExitPortalPoint"]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
+mesh = ExtResource("8_gl5ch")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("9_77o7l")
 
 [node name="BasePortalViewport" type="SubViewport" parent="."]
 size = Vector2i(1152, 648)
 
 [node name="PortalCamera" type="Camera3D" parent="BasePortalViewport"]
 cull_mask = 1048573
-
-[node name="ExitPortalPoint" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 90, -10)
-
-[node name="TransitionExitHole" type="MeshInstance3D" parent="ExitPortalPoint"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-mesh = ExtResource("8_gl5ch")
-skeleton = NodePath("../..")
-surface_material_override/0 = ExtResource("9_77o7l")
 
 [node name="TransitionHole" parent="." instance=ExtResource("9_cn0kg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.009, -28.3779, -36.6648)
