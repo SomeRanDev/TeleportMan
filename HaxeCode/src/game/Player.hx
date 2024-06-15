@@ -407,7 +407,7 @@ class Player extends CharacterBody3D {
 			// ON LEVEL START...
 			hitGroundShake = 1.0;
 			isFallingIntoNextLevel = false;
-			this.get_scene_node("ExitPortalPoint").queue_free();
+			//this.get_scene_node("ExitPortalPoint").queue_free();
 		}
 	}
 

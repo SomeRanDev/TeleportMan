@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://da45vfm15obq6"]
+[gd_scene load_steps=19 format=3 uid="uid://da45vfm15obq6"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Level.gd" id="1_acxjl"]
 [ext_resource type="ArrayMesh" uid="uid://dd1deihayr0a" path="res://VisualAssets/Blender/InverseSphere.res" id="1_c61ch"]
@@ -12,7 +12,6 @@
 [ext_resource type="Material" uid="uid://cqljp7dshackq" path="res://VisualAssets/Materials/Rail.tres" id="10_4oh25"]
 [ext_resource type="ArrayMesh" uid="uid://cwssokugp41bf" path="res://VisualAssets/Blender/Level1/Level1_2.res" id="10_17kyc"]
 [ext_resource type="Material" uid="uid://cr6j6r6ga4s07" path="res://VisualAssets/Materials/Sides.tres" id="11_e6d4w"]
-[ext_resource type="ArrayMesh" uid="uid://dqpguio4ol28p" path="res://VisualAssets/Blender/TransitionExitHole.res" id="11_na6a6"]
 [ext_resource type="Material" uid="uid://bmpx1hmq1rwm2" path="res://VisualAssets/Materials/Invisible.tres" id="13_d2dbs"]
 [ext_resource type="Material" uid="uid://cscqji2a11epq" path="res://VisualAssets/Materials/TransitionHoleGlow.tres" id="14_bn58y"]
 
@@ -104,9 +103,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.6, 0)
 mesh = SubResource("CylinderMesh_0xyk0")
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("14_bn58y")
-
-[node name="TransitionExitHole" type="MeshInstance3D" parent="TransitionHole"]
-transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0)
-visible = false
-mesh = ExtResource("11_na6a6")
-skeleton = NodePath("../..")

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dpjtryvg7srbb"
-path="res://.godot/imported/Level2.blend-c968c4e8110b93652dfd24fdff851998.scn"
+uid="uid://ddbcfuwitqpjw"
+path="res://.godot/imported/Level3.blend-1231643463829b5432e220fbaab84984.scn"
 
 [deps]
 
-source_file="res://VisualAssets/Blender/Level2.blend"
-dest_files=["res://.godot/imported/Level2.blend-c968c4e8110b93652dfd24fdff851998.scn"]
+source_file="res://VisualAssets/Blender/Level3.blend"
+dest_files=["res://.godot/imported/Level3.blend-1231643463829b5432e220fbaab84984.scn"]
 
 [params]
 
@@ -33,7 +33,7 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "materials": {
-"Ground": {
+"Grass": {
 "use_external/enabled": true,
 "use_external/path": "res://VisualAssets/Materials/Grass.tres"
 },
@@ -41,29 +41,60 @@ _subresources={
 "use_external/enabled": true,
 "use_external/path": "res://VisualAssets/Materials/Invisible.tres"
 },
+"Rails": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Rail.tres"
+},
 "Sides": {
 "use_external/enabled": true,
 "use_external/path": "res://VisualAssets/Materials/Sides.tres"
 }
 },
 "meshes": {
-"Level2_Cylinder": {
+"Level3_BezierCircle": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://VisualAssets/Blender/Level2/Level2_2.res"
+"save_to_file/path": "res://VisualAssets/Blender/Level3/Donut.res"
 },
-"Level2_Mesh": {
+"Level3_BezierCircle_001": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://VisualAssets/Blender/Level2/Level2_1.res"
+"save_to_file/path": "res://VisualAssets/Blender/Level3/FinalPlatform.res"
+},
+"Level3_BezierCurve": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/RockyRamp.res"
+},
+"Level3_Circle_002": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/TeleportGetPlatform.res"
+},
+"Level3_Circle_005": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/TiltedPlatform.res"
 }
 }
 }

@@ -28,6 +28,9 @@ class Game extends Node3D {
 		currentLevel.name = "OldLevel";
 
 		final next = currentLevel.getNextLevel();
+		currentLevel.queue_free();
+		currentLevel = null;
+
 		if(next != null) {
 			next.position.x = 0;
 			next.name = "CurrentLevel";
@@ -36,8 +39,7 @@ class Game extends Node3D {
 			player.global_position = next.get_node_3d("ExitPortalPoint").global_position;
 			player.setTargetFallingSpot(next.get_node_3d("PlayerStart").global_position);
 			next.onPlayerOccupy();
+			currentLevel = next;
 		}
-
-		currentLevel.queue_free();
 	}
 }
