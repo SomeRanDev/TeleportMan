@@ -80,7 +80,7 @@ shader_parameter/mask = ExtResource("21_3v6xt")
 
 [node name="PersistentContent" type="Node3D"]
 script = ExtResource("1_nlqod")
-firstLevelName = "Level1"
+firstLevelName = "Level7"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
