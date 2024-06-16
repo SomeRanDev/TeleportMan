@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://c602neg4em8ar"]
+
+[ext_resource type="Texture2D" uid="uid://cddx3lw0ahe8l" path="res://VisualAssets/TexturesAndSprites/SpellCover.aseprite" id="1_2tiho"]
+
+[resource]
+albedo_texture = ExtResource("1_2tiho")

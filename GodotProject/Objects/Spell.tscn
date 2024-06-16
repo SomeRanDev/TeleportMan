@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://x4b15fqg1743"]
+
+[ext_resource type="Script" path="res://addons/TeleportMan/Spell.gd" id="1_5mfsy"]
+[ext_resource type="ArrayMesh" uid="uid://dhwp6kjrano0g" path="res://VisualAssets/Blender/Spell.res" id="1_7i6jt"]
+[ext_resource type="ArrayMesh" uid="uid://circug8bv7gxh" path="res://VisualAssets/Blender/SpellGlow.res" id="2_xcsig"]
+[ext_resource type="Material" uid="uid://dfs8746s1vrhs" path="res://VisualAssets/Materials/SpellGlow.tres" id="3_5khah"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xuyqj"]
+height = 3.0
+
+[node name="Area3D" type="Area3D"]
+script = ExtResource("1_5mfsy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_xuyqj")
+
+[node name="Spell" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.373644, -0.33225, 0, 0.33225, 0.373644, 0, 0, 0, 0.5, 0, 1, 0)
+mesh = ExtResource("1_7i6jt")
+skeleton = NodePath("../..")
+
+[node name="SpellGlow" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = ExtResource("2_xcsig")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("3_5khah")

@@ -43,8 +43,14 @@ class Player extends CharacterBody3D {
 
 	var cameraShake: Float = 0.0;
 
+	var hasGoodJump = false;
+
+	var spellCount = 0;
+	var spellNames = [];
+
 	static final MAX_HORIZONTAL_SPEED = 15.0;
-	static final INFINITE_JUMPS = true;
+	static final INFINITE_JUMPS = false;
+	static final FAKE_DASH = false;
 
 	public function getCamera(): Camera3D {
 		return camera;
@@ -256,7 +262,7 @@ class Player extends CharacterBody3D {
 
 		tracker.set_global_rotation(tracker.get_global_rotation().lerp_angle_vec3(velocityDir.get_rotation(), 10.0 * delta));
 
-		this.get_persistent_node("SpeedLabel").as(Label).text = Std.string(Math.floor(velocity.length() * 10.0));
+		this.get_persistent_node("SpeedLabel").as(Label).text = "(" + Std.string(Math.floor(velocity.length() * 10.0)) + " pixels per second)";
 	}
 
 	public override function _physics_process(delta: Float) {
@@ -274,7 +280,8 @@ class Player extends CharacterBody3D {
 		updateCamera(delta);
 
 		if(cachedJumpInput > 0.0 && (INFINITE_JUMPS || timeOffGround < 0.2)) {
-			velocity.y = Math.max(7.0, velocity.y + 7.0);
+			final jumpSpeed = hasGoodJump ? 7.0 : 3.0;
+			velocity.y = Math.max(jumpSpeed, velocity.y + jumpSpeed);
 			cachedJumpInput = 0.0;
 			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
 		}
@@ -287,7 +294,7 @@ class Player extends CharacterBody3D {
 		final direction = inputDir.rotated(-mouseRotation.y);
 
 		final SPEED = 5.0;
-		var moveSpeed = delta * (Input.is_key_pressed(KEY_SHIFT) ? (SPEED * 5.0) : SPEED);
+		var moveSpeed = delta * (FAKE_DASH && Input.is_key_pressed(KEY_SHIFT) ? (SPEED * 5.0) : SPEED);
 		if(!is_on_floor()) {
 			
 			if(!direction.is_zero_approx()) {
@@ -465,5 +472,29 @@ class Player extends CharacterBody3D {
 	public function forceGroundVelocity(velocity2d: Vector2) {
 		velocity.x = velocity2d.x;
 		velocity.z = velocity2d.y;
+	}
+
+	public function obtainGoodJump() {
+		hasGoodJump = true;
+	}
+
+	public function addSpell(spellName: String) {
+		spellCount++;
+		spellNames.push(spellName);
+
+		final spellsText = spellCount == 1 ? "Spell" : "Spells";
+		static final foundTexts = [
+			"Found", "Learned", "Gained", "Obtained", "Mastered", "Used",
+			"Taken", "Learnt", "Consumed", "Stolen", "Eaten", "Tasted",
+			"Tickled", "Licked", "Slurped", "Burped", "Digested"
+		];
+
+		final found = if(spellCount < foundTexts.length) {
+			foundTexts[spellCount];
+		} else {
+			"Are Now Mine";
+		}
+
+		this.get_persistent_node("SpellCount").as(Label).text = spellCount + " " + spellsText + " " + found;
 	}
 }

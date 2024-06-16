@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://c5w16oasxeujd"]
+[gd_scene load_steps=39 format=3 uid="uid://c5w16oasxeujd"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Game.gd" id="1_nlqod"]
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
@@ -21,6 +21,9 @@
 [ext_resource type="Material" uid="uid://cr6j6r6ga4s07" path="res://VisualAssets/Materials/Sides.tres" id="19_613dp"]
 [ext_resource type="Shader" path="res://Code/Shaders/UnaliveAnimation.gdshader" id="20_5cesa"]
 [ext_resource type="Texture2D" uid="uid://bqx6as414xdp0" path="res://VisualAssets/TexturesAndSprites/HaxeJamLogo.aseprite" id="21_3v6xt"]
+[ext_resource type="Shader" path="res://Code/Shaders/SpellGainedText.gdshader" id="22_341wg"]
+[ext_resource type="FontFile" uid="uid://c6xp1l4sayvjg" path="res://VisualAssets/Fonts/PlaywriteFRModerne-Regular.ttf" id="22_hnl7h"]
+[ext_resource type="Script" path="res://addons/TeleportMan/SpellGained.gd" id="24_n8tce"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
 radius = 0.45
@@ -78,9 +81,15 @@ shader_parameter/transitionInType = 0
 shader_parameter/noise = SubResource("NoiseTexture2D_wckt8")
 shader_parameter/mask = ExtResource("21_3v6xt")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r8q7d"]
+shader = ExtResource("22_341wg")
+shader_parameter/strength = 0.4
+shader_parameter/speed = 0.5
+shader_parameter/angle = 0.0
+
 [node name="PersistentContent" type="Node3D"]
 script = ExtResource("1_nlqod")
-firstLevelName = "Level3"
+firstLevelName = "Level1"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
@@ -180,10 +189,20 @@ environment = SubResource("Environment_pisio")
 [node name="SpeedLabel" type="Label" parent="."]
 offset_left = 2.0
 offset_top = 121.0
-offset_right = 206.0
-offset_bottom = 163.0
-theme_override_font_sizes/font_size = 30
+offset_right = 243.0
+offset_bottom = 165.0
+theme_override_fonts/font = ExtResource("22_hnl7h")
+theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
+
+[node name="SpellCount" type="Label" parent="."]
+offset_left = 900.0
+offset_top = 13.0
+offset_right = 1141.0
+offset_bottom = 57.0
+theme_override_fonts/font = ExtResource("22_hnl7h")
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 2
 
 [node name="TransitionHole" type="MeshInstance3D" parent="."]
 extra_cull_margin = 16384.0
@@ -211,3 +230,49 @@ offset_right = 1152.0
 offset_bottom = 648.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="SpellGained" type="Node2D" parent="."]
+position = Vector2(576, 324)
+script = ExtResource("24_n8tce")
+
+[node name="SpellGainedLabel" type="Label" parent="SpellGained"]
+material = SubResource("ShaderMaterial_r8q7d")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -478.0
+offset_top = -132.0
+offset_right = 513.0
+offset_bottom = 84.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 30
+theme_override_constants/shadow_outline_size = 100
+theme_override_fonts/font = ExtResource("22_hnl7h")
+theme_override_font_sizes/font_size = 100
+text = "SPELL GAINED!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MoreInfoLabel" type="Label" parent="SpellGained/SpellGainedLabel"]
+z_index = -2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 120.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 15
+theme_override_constants/shadow_outline_size = 100
+theme_override_fonts/font = ExtResource("22_hnl7h")
+theme_override_font_sizes/font_size = 35
+text = "Got the \"Spell that makes you jump better\"!"
+horizontal_alignment = 1
+vertical_alignment = 1
