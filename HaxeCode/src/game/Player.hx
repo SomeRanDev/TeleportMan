@@ -3,11 +3,15 @@ package game;
 import godot.*;
 
 import game.Input.GameInput;
+import game.LiveActionPlayer.LiveActionPlayerLeft;
+import game.LiveActionPlayer.LiveActionPlayerRight;
 
 using game.NodeHelpers;
 using game.MacroHelpers;
 
 class Player extends CharacterBody3D {
+	@:export var playIntroAnimation = false;
+
 	var camera: Camera3D;
 	var cameraController: Node3D;
 	var velocityDir: Node3D;
@@ -24,6 +28,7 @@ class Player extends CharacterBody3D {
 	var tiltInput: Float;
 	var lastPosition: Vector3;
 
+	var storedTeleport: Int = 0;
 	var storedPosition: Vector3;
 	var storedMouseRotation: Vector3;
 	var storedCameraForward: Vector3;
@@ -44,6 +49,12 @@ class Player extends CharacterBody3D {
 	var cameraShake: Float = 0.0;
 
 	var hasGoodJump = false;
+	var hasTeleport = false;
+
+	var currentLeftAnimation: String;
+	var currentRightAnimation: String;
+
+	var isIntro = true;
 
 	var spellCount = 0;
 	var spellNames = [];
@@ -74,7 +85,12 @@ class Player extends CharacterBody3D {
 		transitionShader.set_shader_parameter("animationRatio", 1.0);
 		transitionShader.set_shader_parameter("animationMode", 1.0);
 		transitionInTimer = 1.0;
+
+		
 	}
+
+	var left: LiveActionPlayerLeft;
+	var right: LiveActionPlayerRight;
 
 	public override function _ready() {
 		gravity = 20;
@@ -84,6 +100,14 @@ class Player extends CharacterBody3D {
 
 		final transitionObject = this.get_persistent_node("Transition").as(ColorRect);
 		transitionShader = transitionObject.get_material().as(ShaderMaterial);
+
+		left = camera.get_node("Left").as(LiveActionPlayerLeft);
+		if(playIntroAnimation) left.setAnimation(left.leftInit);
+
+		right = camera.get_node("Right").as(LiveActionPlayerRight);
+		if(playIntroAnimation) right.setAnimation(right.rightInit);
+
+		isIntro = playIntroAnimation;
 
 		GameInput.init();
 	}
@@ -147,6 +171,11 @@ class Player extends CharacterBody3D {
 				transitionInTimer = 1.0;
 				cameraShake = 0.0;
 				resetCameraPosition();
+
+				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+				sst.onUnalive();
+
+				// on respawn onRespawn
 			}
 
 			updateCameraShake();
@@ -171,10 +200,11 @@ class Player extends CharacterBody3D {
 
 		updateCameraShake();
 
-		if(GameInput.isLeftActionJustPressed()) {
+		if(hasTeleport && storedTeleport == 0 && GameInput.isLeftActionJustPressed()) {
 			final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
 			teleportToCamera.set_global_transform(camera.get_global_transform());
 
+			storedTeleport = 1;
 			storedPosition = get_global_position();
 			storedMouseRotation = mouseRotation;
 			storedCameraForward = -camera.get_global_transform().basis.z;
@@ -187,34 +217,21 @@ class Player extends CharacterBody3D {
 			// sst.set_surface_override_material(0, material);
 			// camera.add_child(sst);
 
-			// final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
-			// sst.reset();
-		} else if(GameInput.isRightActionJustPressed()) {
-			final cameraForwardVector = -camera.get_global_transform().basis.z;
-			final velocityForward = get_velocity().normalized();
-			final speed = get_velocity().length();
+			//right.setAnimation(right.teleportStart);
 
-			if(speed > 0.0) {
-				if(velocityForward.is_equal_approx(Vector3.UP)) {
-					velocityDir.set_global_rotation_degrees(new Vector3(90, 0, 0));
-				} else if(velocityForward.is_equal_approx(Vector3.DOWN)) {
-					velocityDir.set_global_rotation_degrees(new Vector3(-90, 0, 0));
-				} else {
-					velocityDir.look_at(velocityDir.get_global_transform().origin + velocityForward, Vector3.UP);
-				}
-			}
+			final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+			sst.reset();
+		} else if(storedTeleport == 1) {
+			final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
+			teleportToCamera.set_global_transform(camera.get_global_transform());
 
-			// final speed = get_velocity().length();
-			// final offset = new Quaternion(, cameraForwardVector);
-
-			set_global_position(storedPosition);
-			mouseRotation = storedMouseRotation;
-			updateCameraRotation();
-
-			if(speed > 0.0) {
-				set_velocity(-velocityDir.get_global_transform().basis.z * speed);
-				maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
-			}
+			storedPosition = get_global_position();
+			storedMouseRotation = mouseRotation;
+			storedCameraForward = -camera.get_global_transform().basis.z;
+		} else if(hasTeleport && storedTeleport == 3 && GameInput.isLeftActionJustPressed()) {
+			storedTeleport = 4;
+			final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+			sst.enter();
 		}
 
 		if(is_on_floor()) {
@@ -230,11 +247,58 @@ class Player extends CharacterBody3D {
 		}
 	}
 
+	public function stopRecording() {
+		storedTeleport = 2;
+	}
+
+	public function finishTeleportStart() {
+		storedTeleport = 3;
+	}
+
+	public function finishTeleport() {
+		final cameraForwardVector = -camera.get_global_transform().basis.z;
+		final velocityForward = get_velocity().normalized();
+		final speed = get_velocity().length();
+
+		if(speed > 0.0) {
+			if(velocityForward.is_equal_approx(Vector3.UP)) {
+				velocityDir.set_global_rotation_degrees(new Vector3(90, 0, 0));
+			} else if(velocityForward.is_equal_approx(Vector3.DOWN)) {
+				velocityDir.set_global_rotation_degrees(new Vector3(-90, 0, 0));
+			} else {
+				velocityDir.look_at(velocityDir.get_global_transform().origin + velocityForward, Vector3.UP);
+			}
+		}
+
+		// final speed = get_velocity().length();
+		// final offset = new Quaternion(, cameraForwardVector);
+
+		set_global_position(storedPosition);
+		mouseRotation = storedMouseRotation;
+		updateCameraRotation();
+
+		storedTeleport = 0;
+		final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+		sst.visible = false;
+
+		if(speed > 0.0) {
+			set_velocity(-velocityDir.get_global_transform().basis.z * speed);
+			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
+		}
+	}
+
 	function getHorizontalSpeedVector(): Vector2 {
 		return new Vector2(velocity.x, velocity.z);
 	}
 
 	function canMove() {
+		if(isIntro) {
+			if(right.hasAnimation()) {
+				return false;
+			} else {
+				isIntro = false;
+			}
+		}
 		return (!isFallingIntoNextLevel && initialFallSpot.x > -9998) || hitGroundShake > 0.0;
 	}
 
@@ -478,6 +542,10 @@ class Player extends CharacterBody3D {
 		hasGoodJump = true;
 	}
 
+	public function obtainTeleport() {
+		hasTeleport = true;
+	}
+
 	public function addSpell(spellName: String) {
 		spellCount++;
 		spellNames.push(spellName);
@@ -496,5 +564,14 @@ class Player extends CharacterBody3D {
 		}
 
 		this.get_persistent_node("SpellCount").as(Label).text = spellCount + " " + spellsText + " " + found;
+
+		if(spellName == "Teleport") {
+			right.setAnimation(right.getTeleport);
+		} else {
+			left.setAnimation(left.eat);
+		}
+	}
+
+	function updateAnimations() {
 	}
 }

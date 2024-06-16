@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://c5w16oasxeujd"]
+[gd_scene load_steps=43 format=3 uid="uid://c5w16oasxeujd"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Game.gd" id="1_nlqod"]
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
@@ -6,8 +6,9 @@
 [ext_resource type="Material" uid="uid://cuhd58o6hwmh7" path="res://VisualAssets/Materials/ScreenshotTakeMaterial.tres" id="3_tek3s"]
 [ext_resource type="Script" path="res://addons/TeleportMan/ScreenshotTake.gd" id="4_bg15k"]
 [ext_resource type="Shader" path="res://Code/Shaders/LiveActionPlayer.gdshader" id="5_po44y"]
-[ext_resource type="Script" path="res://addons/TeleportMan/LiveActionPlayer.gd" id="6_6iw36"]
+[ext_resource type="Script" path="res://addons/TeleportMan/game_LiveActionPlayer_LiveActionPlayerRight.gd" id="6_6iw36"]
 [ext_resource type="Texture2D" uid="uid://b0nmsf47e0h6n" path="res://VisualAssets/Runtime/TeleportToTexture.tres" id="7_47xf7"]
+[ext_resource type="Shader" path="res://Code/Shaders/LiveAction.gdshader" id="8_4mmpo"]
 [ext_resource type="Shader" path="res://Code/Shaders/SpeedArrowViewport.gdshader" id="8_lc7tj"]
 [ext_resource type="ArrayMesh" uid="uid://bb0non1l6rdt8" path="res://VisualAssets/Blender/SpeedArrow.res" id="9_4dd2m"]
 [ext_resource type="Material" uid="uid://dyhcey1ixyq4v" path="res://VisualAssets/Materials/SpeedArrow/SpeedArrowColor1.tres" id="10_6agv4"]
@@ -24,12 +25,19 @@
 [ext_resource type="Shader" path="res://Code/Shaders/SpellGainedText.gdshader" id="22_341wg"]
 [ext_resource type="FontFile" uid="uid://c6xp1l4sayvjg" path="res://VisualAssets/Fonts/PlaywriteFRModerne-Regular.ttf" id="22_hnl7h"]
 [ext_resource type="Script" path="res://addons/TeleportMan/SpellGained.gd" id="24_n8tce"]
+[ext_resource type="Script" path="res://addons/TeleportMan/game_LiveActionPlayer_LiveActionPlayerLeft.gd" id="25_qi2yo"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
 radius = 0.45
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vufq0"]
 shader = ExtResource("5_po44y")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nngjp"]
+shader = ExtResource("8_4mmpo")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dlq7l"]
+shader = ExtResource("8_4mmpo")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_b2lnl"]
 shader = ExtResource("8_lc7tj")
@@ -89,7 +97,7 @@ shader_parameter/angle = 0.0
 
 [node name="PersistentContent" type="Node3D"]
 script = ExtResource("1_nlqod")
-firstLevelName = "Level1"
+firstLevelName = "Level3"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
@@ -108,9 +116,9 @@ current = true
 [node name="VelocityDir" type="Node3D" parent="Player/CameraController/Camera3D"]
 
 [node name="ScreenshotTake" type="MeshInstance3D" parent="Player/CameraController/Camera3D"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.84)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 5.31, -2.905, -0.84)
 visible = false
-layers = 2
+layers = 4
 mesh = ExtResource("2_y02ik")
 surface_material_override/0 = ExtResource("3_tek3s")
 script = ExtResource("4_bg15k")
@@ -122,6 +130,18 @@ position = Vector2(576, 370)
 scale = Vector2(0.6, 0.6)
 script = ExtResource("6_6iw36")
 
+[node name="Left" type="Sprite2D" parent="Player/CameraController/Camera3D"]
+material = SubResource("ShaderMaterial_nngjp")
+position = Vector2(576, 324)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("25_qi2yo")
+
+[node name="Right" type="Sprite2D" parent="Player/CameraController/Camera3D"]
+material = SubResource("ShaderMaterial_dlq7l")
+position = Vector2(576, 324)
+scale = Vector2(0.6, 0.6)
+script = ExtResource("6_6iw36")
+
 [node name="TeleportToViewport" type="SubViewport" parent="."]
 size = Vector2i(1152, 648)
 
@@ -129,7 +149,7 @@ size = Vector2i(1152, 648)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.68046, 3.13912)
 
 [node name="TeleportTo" type="Camera3D" parent="TeleportToViewport/TeleportToController"]
-cull_mask = 1048573
+cull_mask = 1048571
 
 [node name="TeleportToTexture" type="Sprite2D" parent="."]
 visible = false
