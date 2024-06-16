@@ -8,7 +8,7 @@
 size = Vector2(130, 130)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_i3o4b"]
-size = Vector3(110, 10, 110)
+size = Vector3(150, 10, 150)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_xg5bt"]
 size = Vector2(120, 120)

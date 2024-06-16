@@ -16,19 +16,23 @@ class Lava extends ShiftingNoiseTexture {
 	public override function _ready() {
 		super._ready();
 
-		setTargetLavaLevel(initialLavalLevel);
-		setCurrentLavaLevel(initialLavalLevel);
+		initLavaLevel();
 	}
 
 	public function setTargetLavaLevel(level: Float) {
 		targetLavaLevel = level;
 	}
 
+	public function initLavaLevel() {
+		setTargetLavaLevel(initialLavalLevel);
+		setCurrentLavaLevel(initialLavalLevel);
+	}
+
 	public override function _process(delta: Float) {
 		super._process(delta);
 
 		if(currentLavaLevel != targetLavaLevel) {
-			setCurrentLavaLevel(Godot.move_toward(currentLavaLevel, targetLavaLevel, delta * 10.0));
+			setCurrentLavaLevel(Godot.move_toward(currentLavaLevel, targetLavaLevel, delta * 4.0));
 		}
 	}
 

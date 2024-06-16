@@ -38,6 +38,7 @@ class Player extends CharacterBody3D {
 	var targetFallSpot: Vector3;
 	var initialFallSpot: Vector3;
 	var hitGroundShake: Float = 0.0;
+	var lavaLowerShake: Float = 0.0;
 
 	var respawnPosition: Vector3;
 
@@ -50,7 +51,11 @@ class Player extends CharacterBody3D {
 	var cameraShake: Float = 0.0;
 
 	var hasGoodJump = true;
-	var hasTeleport = false;
+	var hasTeleport = true;
+
+	var timesJumpedInAir = 0;
+	var hasDoubleJump = false;
+	var hasTripleJump = false;
 
 	var currentLeftAnimation: String;
 	var currentRightAnimation: String;
@@ -62,6 +67,8 @@ class Player extends CharacterBody3D {
 
 	var spellCount = 0;
 	var spellNames = [];
+
+	var mouseSensitivity = 50.0;
 
 	var storedVelocity: Vector3;
 
@@ -129,8 +136,8 @@ class Player extends CharacterBody3D {
 			}
 			case "InputEventMouseMotion" if(GameInput.getIsMouseCaptured()): {
 				final mouseMotionEvent: InputEventMouseMotion = cast event;
-				rotationInput += -mouseMotionEvent.get_relative().x * 0.1;
-				tiltInput += -mouseMotionEvent.get_relative().y * 0.1;
+				rotationInput += -mouseMotionEvent.get_relative().x * 0.1 * (mouseSensitivity / 50.0);
+				tiltInput += -mouseMotionEvent.get_relative().y * 0.1 * (mouseSensitivity / 50.0);
 			}
 			case "InputEventMouseButton" if(!GameInput.getIsMouseCaptured()) : {
 				final buttonEvent: InputEventMouseButton = cast event;
@@ -166,6 +173,13 @@ class Player extends CharacterBody3D {
 
 	public override function _process(delta: Float) {
 		GameInput.update();
+
+		if(Input.get_mouse_mode() != MOUSE_MODE_CAPTURED) {
+			final menu = this.get_persistent_node("PauseMenu").as(ColorRect);
+			if(!menu.visible) {
+				menu.visible = true;
+			}
+		}
 
 		if(isPerishing) {
 			velocity = Vector3.ZERO;
@@ -209,6 +223,15 @@ class Player extends CharacterBody3D {
 				resetCameraPosition();
 			}
 			cameraShake = hitGroundShake;
+		} else if(lavaLowerShake > 0.0) {
+			lavaLowerShake -= delta * 2.0;
+			if(lavaLowerShake < 0.0) {
+				lavaLowerShake = 0.0;
+				resetCameraPosition();
+				cameraShake = 0.0;
+			} else {
+				cameraShake = 0.2 * Math.min(1.0, (1.0 - lavaLowerShake) / 0.5);
+			}
 		}
 
 		updateCameraShake();
@@ -251,11 +274,11 @@ class Player extends CharacterBody3D {
 				storedTeleport = 4;
 				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
 				sst.enter();
-			} else if(GameInput.isRightActionJustPressed()) {
+			} /*else if(GameInput.isRightActionJustPressed()) {
 				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
 				sst.onUnalive();
 				storedTeleport = 0;
-			}
+			}*/
 		}
 
 		if(is_on_floor()) {
@@ -383,11 +406,21 @@ class Player extends CharacterBody3D {
 
 		updateCamera(delta);
 
-		if(cachedJumpInput > 0.0 && (INFINITE_JUMPS || timeOffGround < 0.2)) {
+		if(cachedJumpInput > 0.0 && (INFINITE_JUMPS || timeOffGround < 0.2 ||
+			(timesJumpedInAir == 0 && hasDoubleJump) || (timesJumpedInAir == 1 && hasTripleJump)
+		)) {
+			if(timeOffGround < 0.2) {
+				timesJumpedInAir = 0;
+			} else {
+				timesJumpedInAir++;
+			}
+
 			final jumpSpeed = hasGoodJump ? 7.0 : 3.0;
 			velocity.y = Math.max(jumpSpeed, velocity.y + jumpSpeed);
 			cachedJumpInput = 0.0;
 			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
+
+			timeOffGround = 0.2;
 		}
 
 		final inputDir = if(canMove()) {
@@ -591,10 +624,26 @@ class Player extends CharacterBody3D {
 		hasTeleport = obtain;
 	}
 
+	public function getSpellCount() return spellCount;
+	public function setSpellCount(count: Int) {
+		spellCount = count;
+		refreshSpellCount();
+	}
+
 	public function addSpell(spellName: String) {
 		spellCount++;
 		spellNames.push(spellName);
 
+		refreshSpellCount();
+
+		if(spellName == "Teleport") {
+			right.setAnimation(right.getTeleport);
+		} else {
+			left.setAnimation(left.eat);
+		}
+	}
+
+	function refreshSpellCount() {
 		final spellsText = spellCount == 1 ? "Spell" : "Spells";
 		static final foundTexts = [
 			"Found", "Learned", "Gained", "Obtained", "Mastered", "Used",
@@ -609,12 +658,6 @@ class Player extends CharacterBody3D {
 		}
 
 		this.get_persistent_node("SpellCount").as(Label).text = spellCount + " " + spellsText + " " + found;
-
-		if(spellName == "Teleport") {
-			right.setAnimation(right.getTeleport);
-		} else {
-			left.setAnimation(left.eat);
-		}
 	}
 
 	function updateAnimations() {
@@ -645,5 +688,27 @@ class Player extends CharacterBody3D {
 
 	function resetLevel() {
 		this.get_persistent_node("CurrentLevel").as(Level).resetLevel();
+	}
+
+	public function lowerLava() {
+		lavaLowerShake = 1.0;
+
+		final lava = this.get_scene_node("Lava").as(Lava);
+		lava.setTargetLavaLevel(-35.0);
+	}
+
+	public function setMouseSensitivity(s: Float) {
+		mouseSensitivity = s;
+	}
+
+	public function setHasDoubleJump(v: Bool) {
+		hasDoubleJump = v;
+	}
+
+	public function setHasTripleJump(v: Bool) {
+		hasTripleJump = v;
+	}
+
+	public function bruh() {
 	}
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://c5w16oasxeujd"]
+[gd_scene load_steps=44 format=3 uid="uid://c5w16oasxeujd"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Game.gd" id="1_nlqod"]
 [ext_resource type="Script" path="res://addons/TeleportMan/Player.gd" id="1_x4iy1"]
@@ -26,6 +26,7 @@
 [ext_resource type="FontFile" uid="uid://c6xp1l4sayvjg" path="res://VisualAssets/Fonts/PlaywriteFRModerne-Regular.ttf" id="22_hnl7h"]
 [ext_resource type="Script" path="res://addons/TeleportMan/SpellGained.gd" id="24_n8tce"]
 [ext_resource type="Script" path="res://addons/TeleportMan/game_LiveActionPlayer_LiveActionPlayerLeft.gd" id="25_qi2yo"]
+[ext_resource type="Script" path="res://addons/TeleportMan/PauseMenu.gd" id="27_0s567"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ee1mi"]
 radius = 0.45
@@ -97,7 +98,7 @@ shader_parameter/angle = 0.0
 
 [node name="PersistentContent" type="Node3D"]
 script = ExtResource("1_nlqod")
-firstLevelName = "Level1"
+firstLevelName = "Level4"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
@@ -296,3 +297,54 @@ theme_override_font_sizes/font_size = 35
 text = "Got the \"Spell that makes you jump better\"!"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PauseMenu" type="ColorRect" parent="."]
+z_index = 10
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 0.752941)
+script = ExtResource("27_0s567")
+
+[node name="Resume" type="Button" parent="PauseMenu"]
+layout_mode = 0
+offset_left = 459.0
+offset_top = 440.0
+offset_right = 689.0
+offset_bottom = 512.0
+theme_override_font_sizes/font_size = 30
+text = "Resume
+"
+
+[node name="Restart" type="Button" parent="PauseMenu"]
+layout_mode = 0
+offset_left = 410.0
+offset_top = 551.0
+offset_right = 739.525
+offset_bottom = 594.0
+theme_override_font_sizes/font_size = 25
+text = "Restart Level"
+
+[node name="Slider" type="HSlider" parent="PauseMenu"]
+layout_mode = 0
+offset_left = 339.0
+offset_top = 137.0
+offset_right = 833.0
+offset_bottom = 176.0
+step = 5.0
+
+[node name="Label" type="Label" parent="PauseMenu/Slider"]
+layout_mode = 0
+offset_top = -30.0
+offset_right = 197.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 25
+text = "Mouse Sensitivity"
+
+[node name="ValueLabel" type="Label" parent="PauseMenu/Slider"]
+layout_mode = 0
+offset_top = -26.0
+offset_right = 496.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 25
+text = "50%"
+horizontal_alignment = 2

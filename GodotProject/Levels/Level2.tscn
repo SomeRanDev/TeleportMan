@@ -96,6 +96,7 @@ spellName = "Spell that makes statues float"
 
 [node name="MonkeyHead" type="AnimatableBody3D" parent="."]
 transform = Transform3D(0.044767, 0, 4.9998, -0.510644, 4.97385, 0.00457218, -4.97365, -0.510664, 0.0445329, -21.8527, -18.7026, 6.43321)
+sync_to_physics = false
 script = ExtResource("13_g1m14")
 direction = Vector3(0, 2, 0)
 

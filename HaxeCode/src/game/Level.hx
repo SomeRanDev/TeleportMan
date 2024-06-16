@@ -9,6 +9,7 @@ class Level extends Node3D {
 	@:export var levelId: Int = 0;
 	@:export var nextLevelName: String;
 
+	var playerSpellCount: Int;
 	var nextLevelInst: Level;
 
 	public function getNextLevel(): Level { 
@@ -51,11 +52,15 @@ class Level extends Node3D {
 		shader.set_shader_parameter("_view_texture", cast(nextLevelInst.get_node("BasePortalViewport"), SubViewport).get_texture());
 		hole.set_surface_override_material(0, shader);
 
+		final player: Player = cast this.get_persistent_node("Player");
+		playerSpellCount = player.getSpellCount();
+
 		//this.get_node_3d("DirectionalLight3D").visible = true;
 	}
 
 	public function resetLevel() {
 		final player = this.get_persistent_node("Player").as(Player);
+		player.setSpellCount(playerSpellCount);
 		if(levelId == 1) {
 			player.obtainGoodJump(false);
 			respawnSpell("JumpSpell");
@@ -72,6 +77,11 @@ class Level extends Node3D {
 
 			respawnSpell("TeleportSpell");
 			respawnSpell("SummonJunkSpell");
+		} else if(levelId == 6) {
+			final lava = this.get_scene_node("Lava").as(Lava);
+			lava.initLavaLevel();
+
+			respawnSpell("LowerLavaSpell");
 		}
 	}
 

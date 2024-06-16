@@ -74,7 +74,7 @@ transform = Transform3D(0.159316, -7.55013e-08, -0.391988, 3.49691e-08, 0.8, -3.
 skeleton = NodePath("../Boost")
 
 [node name="PlayerStart" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.316432, -27.9579, 16.0813)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.316432, -31.8718, 39.9951)
 script = ExtResource("8_smb7d")
 
 [node name="ExitPortalPoint" type="Node3D" parent="PlayerStart"]

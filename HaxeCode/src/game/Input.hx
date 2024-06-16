@@ -139,14 +139,20 @@ class GameInput extends godot.Object {
 	static var LeftAction: InputAction;
 	static var RightAction: InputAction;
 
+	static var hasInit = false;
+
 	/**
 		Should be called ONCE at the start of the game.
 	**/
 	public static function init() {
-		GodotInput.set_use_accumulated_input(false);
-		setMouseCaptured(false);
+		if(!hasInit) {
+			GodotInput.set_use_accumulated_input(false);
+			setMouseCaptured(false);
 
-		initDefaultInputConfig();
+			initDefaultInputConfig();
+
+			hasInit = true;
+		}
 	}
 
 	/**
@@ -280,8 +286,18 @@ class GameInput extends godot.Object {
 	public static function isJumpPressed() return Jump.isPressed();
 	public static function isJumpJustPressed() return Jump.isJustPressed(time);
 	public static function isLeftActionPressed() return LeftAction.isPressed();
-	public static function isLeftActionJustPressed() return LeftAction.isJustPressed(time);
-	public static function isRightActionJustPressed() return RightAction.isJustPressed(time);
+	public static function isLeftActionJustPressed() {
+		if(GodotInput.get_mouse_mode() != MOUSE_MODE_CAPTURED) {
+			return false;
+		}
+		return LeftAction.isJustPressed(time);
+	}
+	public static function isRightActionJustPressed() {
+		if(GodotInput.get_mouse_mode() != MOUSE_MODE_CAPTURED) {
+			return false;
+		}
+		return RightAction.isJustPressed(time);
+	}
 
 	// ---
 	// * Menu inputs
