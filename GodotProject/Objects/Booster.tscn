@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://ca0y8k0va5wkv"]
+
+[ext_resource type="ArrayMesh" uid="uid://dea5scsb1y13" path="res://VisualAssets/Blender/Boost.res" id="1_18yer"]
+[ext_resource type="Script" path="res://addons/TeleportMan/BoostArea.gd" id="2_fxum1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ca0t1"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_iq6a6"]
+data = PackedVector3Array(0, 0, 2, 1, 0, -2, 1, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, -2, 0, 0, 2, -1, 0, -2, 0, 0, 0, 0, 0, 2, -1, 0, 0, -1, 0, -2)
+
+[node name="Boost" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = ExtResource("1_18yer")
+surface_material_override/0 = SubResource("StandardMaterial3D_ca0t1")
+
+[node name="Area3D" type="Area3D" parent="."]
+script = ExtResource("2_fxum1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+shape = SubResource("ConcavePolygonShape3D_iq6a6")

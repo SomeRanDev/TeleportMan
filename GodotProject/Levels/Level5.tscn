@@ -34,7 +34,7 @@ data = PackedVector3Array(0, 1, 4.25, 0.4166, 1, 4.2295, 0, 0.6, 4.375, 0.4166, 
 
 [node name="Level5" type="Node3D"]
 script = ExtResource("1_pq5vp")
-nextLevelName = "Level8"
+nextLevelName = "Level6"
 
 [node name="LevelWalls" type="MeshInstance3D" parent="."]
 transform = Transform3D(60, 0, 0, 0, 40, 0, 0, 0, 60, 0, 2.95691, 3.1983)

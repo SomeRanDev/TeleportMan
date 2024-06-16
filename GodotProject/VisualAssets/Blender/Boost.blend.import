@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://o6qadbw7j4ti"
-path="res://.godot/imported/Level7.blend-91cbda73b1a09038d79e5f42f05bc26d.scn"
+uid="uid://c2u6t45m8x0ii"
+path="res://.godot/imported/Boost.blend-6fd12b70e2ea32d7d80d813d2e71d83d.scn"
 
 [deps]
 
-source_file="res://VisualAssets/Blender/Level7.blend"
-dest_files=["res://.godot/imported/Level7.blend-91cbda73b1a09038d79e5f42f05bc26d.scn"]
+source_file="res://VisualAssets/Blender/Boost.blend"
+dest_files=["res://.godot/imported/Boost.blend-6fd12b70e2ea32d7d80d813d2e71d83d.scn"]
 
 [params]
 
@@ -32,25 +32,15 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
-"materials": {
-"Grass": {
-"use_external/enabled": true,
-"use_external/path": "res://VisualAssets/Materials/Grass.tres"
-},
-"Sides": {
-"use_external/enabled": true,
-"use_external/path": "res://VisualAssets/Materials/Sides.tres"
-}
-},
 "meshes": {
-"Level7_Cube": {
+"Boost_Plane": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://VisualAssets/Blender/Level7/Start.res"
+"save_to_file/path": "res://VisualAssets/Blender/Boost.res"
 }
 }
 }

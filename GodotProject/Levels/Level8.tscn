@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://cp5vkbmkbtyg4"]
+[gd_scene load_steps=15 format=3 uid="uid://cp5vkbmkbtyg4"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Level.gd" id="1_v3sf7"]
 [ext_resource type="ArrayMesh" uid="uid://depwhqpasspq8" path="res://VisualAssets/Blender/InverseCylinderWithTop.res" id="2_8spck"]
 [ext_resource type="Material" uid="uid://bm0euivwuguif" path="res://VisualAssets/Materials/Level8_Walls.tres" id="3_1t0kj"]
 [ext_resource type="ArrayMesh" uid="uid://ctgyn0on58ksp" path="res://VisualAssets/Blender/Level8/Maze.res" id="4_khdes"]
 [ext_resource type="ArrayMesh" uid="uid://ucidfjbt61v1" path="res://VisualAssets/Blender/Level5/Goal.res" id="6_1y1hm"]
+[ext_resource type="PackedScene" uid="uid://ca0y8k0va5wkv" path="res://Objects/Booster.tscn" id="6_smg1f"]
 [ext_resource type="Script" path="res://addons/TeleportMan/PlayerStart.gd" id="7_42p7u"]
 [ext_resource type="ArrayMesh" uid="uid://dqpguio4ol28p" path="res://VisualAssets/Blender/TransitionExitHole.res" id="8_fpp7a"]
 [ext_resource type="Material" uid="uid://cr6j6r6ga4s07" path="res://VisualAssets/Materials/Sides.tres" id="9_j241s"]
@@ -55,6 +56,10 @@ mesh = ExtResource("6_1y1hm")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Geometry/Goal/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_wotgt")
+
+[node name="Boost" parent="Geometry" instance=ExtResource("6_smg1f")]
+transform = Transform3D(-1, 0, -7.54979e-08, 0, 1, 0, 1.50996e-07, 0, -0.5, -15.0017, 2.14951, -13.9043)
+skeleton = NodePath("../..")
 
 [node name="PlayerStart" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.554021, -20.0586, 25.4794)

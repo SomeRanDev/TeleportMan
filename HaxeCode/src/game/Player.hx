@@ -334,13 +334,17 @@ class Player extends CharacterBody3D {
 				velocity.z = direction.y * 5.0;
 			} else {
 
+				final tooFast = xzLength > (MAX_HORIZONTAL_SPEED + 0.5);
+
 				var xzAngle = xzSpeed.angle();
 
 				var inputDirection = direction.angle();
 				final speedVsDirection = Math.abs(Godot.angle_difference(xzAngle, inputDirection));
 
 				if(speedVsDirection < (Math.PI * 0.03)) {
-					xzLength = Godot.move_toward(xzLength, MAX_HORIZONTAL_SPEED, moveSpeed);
+					if(!tooFast) {
+						xzLength = Godot.move_toward(xzLength, MAX_HORIZONTAL_SPEED, moveSpeed);
+					}
 					velocity.x = Math.cos(inputDirection) * xzLength;
 					velocity.z = Math.sin(inputDirection) * xzLength;
 				} else if(speedVsDirection < (Math.PI * 0.333)) {
@@ -349,17 +353,28 @@ class Player extends CharacterBody3D {
 						// if(xzLength < 0) xzLength = 0;
 					//}
 
-					xzLength = Godot.move_toward(xzLength, 0, moveSpeed * 10.0);
-					xzAngle = inputDirection;//Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
+					xzLength = Godot.move_toward(xzLength, 0, moveSpeed * (tooFast ? 2.0 : 10.0));
+					if(tooFast) {
+						xzAngle = Godot.rotate_toward(xzAngle, inputDirection, delta * 0.3);
+					} else {
+						xzAngle = inputDirection;
+					}
+					//Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
-				} else if(speedVsDirection < (Math.PI * 0.8)) {
+				} else if(speedVsDirection < (Math.PI * 0.75)) {
 					//if(xzLength < 15.0) {
-						xzLength -= moveSpeed * 10.0;
-						if(xzLength < 0) xzLength = 0;
+						// xzLength -= moveSpeed * 10.0;
+						// if(xzLength < 0) xzLength = 0;
 					//}
-					xzLength = Godot.move_toward(xzLength, 0, moveSpeed * 10.0);
-					xzAngle = inputDirection;//Godot.rotate_toward(xzAngle, inputDirection, delta * 3.0);
+					xzLength = Godot.move_toward(xzLength, 0, moveSpeed * (tooFast ? 3.0 : 10.0));
+					xzAngle = Godot.rotate_toward(xzAngle, inputDirection, delta * (tooFast ? 1.0 : 6.0));
+					if(tooFast) {
+						// just let it break at this point...
+						
+					} else {
+						//xzAngle = inputDirection;
+					}
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
 				} else {
@@ -369,7 +384,7 @@ class Player extends CharacterBody3D {
 					// if(xzLength < 15.0) {
 					// 	xzLength += moveSpeed;
 					// }
-					xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * 15.0);
+					xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * (tooFast ? 5.0 : 15.0));
 					velocity.x = Math.cos(xzAngle) * xzLength;
 					velocity.z = Math.sin(xzAngle) * xzLength;
 				}
@@ -382,7 +397,8 @@ class Player extends CharacterBody3D {
 			final xzSpeed = getHorizontalSpeedVector();
 			var xzLength = xzSpeed.length();
 			var xzAngle = xzSpeed.angle();
-			xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * 10.0);
+			final tooFast = xzLength > (MAX_HORIZONTAL_SPEED + 0.5);
+			xzLength = Godot.move_toward(xzLength, 0.0, moveSpeed * (tooFast ? 5.0 : 10.0));
 			velocity.x = Math.cos(xzAngle) * xzLength;
 			velocity.z = Math.sin(xzAngle) * xzLength;
 		}
@@ -444,5 +460,10 @@ class Player extends CharacterBody3D {
 		transitionShader.set_shader_parameter("transitionInType",
 			((transitionShader.get_shader_parameter("transitionInType") : Int) + Godot.randi_range(1, 2)) % 3
 		);
+	}
+
+	public function forceGroundVelocity(velocity2d: Vector2) {
+		velocity.x = velocity2d.x;
+		velocity.z = velocity2d.y;
 	}
 }
