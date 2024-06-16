@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Level.gd" id="1_v3sf7"]
 [ext_resource type="ArrayMesh" uid="uid://depwhqpasspq8" path="res://VisualAssets/Blender/InverseCylinderWithTop.res" id="2_8spck"]
-[ext_resource type="Material" uid="uid://nq57ljof3nar" path="res://VisualAssets/Materials/Level6_Walls.tres" id="3_osly0"]
+[ext_resource type="Material" uid="uid://bm0euivwuguif" path="res://VisualAssets/Materials/Level8_Walls.tres" id="3_1t0kj"]
 [ext_resource type="ArrayMesh" uid="uid://ctgyn0on58ksp" path="res://VisualAssets/Blender/Level8/Maze.res" id="4_khdes"]
 [ext_resource type="ArrayMesh" uid="uid://ucidfjbt61v1" path="res://VisualAssets/Blender/Level5/Goal.res" id="6_1y1hm"]
 [ext_resource type="Script" path="res://addons/TeleportMan/PlayerStart.gd" id="7_42p7u"]
@@ -28,7 +28,7 @@ nextLevelName = "Level2"
 transform = Transform3D(60, 0, 0, 0, 40, 0, 0, 0, 60, 0, 2.95691, 3.1983)
 mesh = ExtResource("2_8spck")
 skeleton = NodePath("")
-surface_material_override/0 = ExtResource("3_osly0")
+surface_material_override/0 = ExtResource("3_1t0kj")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="LevelWalls"]
 

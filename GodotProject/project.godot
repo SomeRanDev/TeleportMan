@@ -13,7 +13,6 @@ config_version=5
 config/name="TeleportMan"
 run/main_scene="res://Levels/PersistentContent.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-run/max_fps=45
 boot_splash/image="res://VisualAssets/TexturesAndSprites/Logo.png"
 config/icon="res://icon.svg"
 

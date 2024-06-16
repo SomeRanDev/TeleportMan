@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://c65w32gsd1v0m"]
+[gd_scene load_steps=20 format=3 uid="uid://c65w32gsd1v0m"]
 
 [ext_resource type="Script" path="res://addons/TeleportMan/Level.gd" id="1_0rbw4"]
 [ext_resource type="ArrayMesh" uid="uid://2v2hyche0roy" path="res://VisualAssets/Blender/InverseCylinderSpread.res" id="2_acvpc"]
+[ext_resource type="Material" uid="uid://pabyjr1c022" path="res://VisualAssets/Materials/Level4_Walls.tres" id="3_lcegu"]
 [ext_resource type="ArrayMesh" uid="uid://dwlwi4241rm04" path="res://VisualAssets/Blender/Level4/Plat1.res" id="4_542uv"]
 [ext_resource type="ArrayMesh" uid="uid://bjrvmos5oa1vv" path="res://VisualAssets/Blender/Level4/Plat2.res" id="5_aeq46"]
 [ext_resource type="ArrayMesh" uid="uid://c3onwyndhn2iq" path="res://VisualAssets/Blender/Level4/Plat3.res" id="6_fgef0"]
@@ -41,6 +42,7 @@ nextLevelName = "Level5"
 transform = Transform3D(60, 0, 0, 0, 40, 0, 0, 0, 60, 0, 2.95691, 3.1983)
 mesh = ExtResource("2_acvpc")
 skeleton = NodePath("")
+surface_material_override/0 = ExtResource("3_lcegu")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="LevelWalls"]
 
@@ -130,4 +132,3 @@ cull_mask = 1048573
 [node name="Lava" parent="." instance=ExtResource("12_t072n")]
 
 [node name="TransitionHole" parent="." instance=ExtResource("10_7ief1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.009, -32.536, -28.224)

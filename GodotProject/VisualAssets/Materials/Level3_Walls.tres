@@ -6,6 +6,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_8fl5l")
+shader_parameter/lava_level = -35.0
 shader_parameter/color1 = Color(0.27, 0.1242, 0.1242, 1)
 shader_parameter/color2 = Color(0.4, 0.333333, 0.2, 1)
 shader_parameter/color3 = Color(0.2, 0.2, 0.098, 1)

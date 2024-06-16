@@ -2,6 +2,8 @@ shader_type spatial;
 
 render_mode world_vertex_coords;
 
+uniform float lava_level = -35.0;
+
 uniform vec3 color1: source_color;
 uniform vec3 color2: source_color;
 uniform vec3 color3: source_color;
@@ -42,7 +44,7 @@ vec3 mix_noise2(vec3 col1, vec3 col2, float x, float ratio) {
 }
 
 void fragment() {
-	if(pos.y <= -35.0) {
+	if(pos.y <= lava_level) {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
 	} else {
 	
@@ -99,12 +101,13 @@ void fragment() {
 
 	result = mix(result, vec3(0, 0, 0), 0.5);
 
-	if(pos.y < -10.0) {
-		result = mix(result, vec3(0, 0, 0), (-pos.y - 10.0) / 25.0);
+	float extra = (35.0 + lava_level);
+	if(pos.y < -10.0 + extra) {
+		result = mix(result, vec3(0, 0, 0), (-pos.y - 10.0 + extra) / 25.0);
 	}
 
-	if(pos.y < 10.0) {
-		result = mix(result, vec3(0.0, 0.1, 0.2), (pos.y - 10.0) / 40.0);
+	if(pos.y < 10.0 + extra) {
+		result = mix(result, vec3(0.0, 0.1, 0.2), (pos.y - 10.0 + extra) / 40.0);
 	}
 
 	ALBEDO = result;
