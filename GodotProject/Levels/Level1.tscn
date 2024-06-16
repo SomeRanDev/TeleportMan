@@ -28,6 +28,7 @@ data = PackedVector3Array(0.5586, 2, -0.7973, 0.683, 1.9873, -0.8997, 0.7948, 2,
 
 [node name="Level1" type="Node3D"]
 script = ExtResource("1_acxjl")
+levelId = 1
 nextLevelName = "Level2"
 
 [node name="SkySphere" type="MeshInstance3D" parent="."]
@@ -98,5 +99,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.511, -25.748, -17.286)
 
 [node name="JumpSpell" parent="." instance=ExtResource("16_af4e4")]
 transform = Transform3D(0.907704, 0, 0.419611, 0, 1, 0, -0.419611, 0, 0.907704, 6.90632, -15, 16.8134)
-onPickup = "player.obtainGoodJump()"
+onPickup = "player.obtainGoodJump(true)"
 spellName = "Spell that makes your jump better"

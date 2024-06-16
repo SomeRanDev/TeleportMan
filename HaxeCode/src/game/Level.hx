@@ -2,9 +2,11 @@ package game;
 
 import godot.*;
 
+using game.MacroHelpers;
 using game.NodeHelpers;
 
 class Level extends Node3D {
+	@:export var levelId: Int = 0;
 	@:export var nextLevelName: String;
 
 	var nextLevelInst: Level;
@@ -50,5 +52,33 @@ class Level extends Node3D {
 		hole.set_surface_override_material(0, shader);
 
 		//this.get_node_3d("DirectionalLight3D").visible = true;
+	}
+
+	public function resetLevel() {
+		final player = this.get_persistent_node("Player").as(Player);
+		if(levelId == 1) {
+			player.obtainGoodJump(false);
+			respawnSpell("JumpSpell");
+		} else if(levelId == 2) {
+			final monkeyHead = this.get_scene_node("MonkeyHead").as(AutomoveNode3d);
+			monkeyHead.speed = 0.0;
+			monkeyHead.position = new Vector3(-21.853, -18.703, 6.433);
+
+			respawnSpell("MonkeyHeadSpell");
+		} else if(levelId == 3) {
+			this.get_scene_node("Geometry/JunkHolder").as(Node3D).position.y = -3.0;
+
+			player.obtainTeleport(false);
+
+			respawnSpell("TeleportSpell");
+			respawnSpell("SummonJunkSpell");
+		}
+	}
+
+	function respawnSpell(name: String) {
+		final s = this.get_node_3d(name);
+		if(s.position.y > 9000) {
+			s.position.y -= 9999.0;
+		}
 	}
 }

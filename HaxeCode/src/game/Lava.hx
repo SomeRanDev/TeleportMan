@@ -37,7 +37,7 @@ class Lava extends ShiftingNoiseTexture {
 
 		position.y = level;
 
-		final meshInstance = this.get_scene_node("LevelWalls").as(MeshInstance3D);
+		final meshInstance = get_parent().get_node("LevelWalls").as(MeshInstance3D);
 		final shaderMaterial = meshInstance.get_surface_override_material(0).as(ShaderMaterial);
 		shaderMaterial.set_shader_parameter("lava_level", level);
 	}

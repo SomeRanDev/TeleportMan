@@ -47,8 +47,8 @@ class Spell extends Area3D {
 			this.get_persistent_node("SpellGained").as(SpellGained).start(spellName);
 
 			// play player animation + sound
-			position.y = 999.0;
-			queue_free();
+			position.y += 9999.0;
+			//queue_free();
 		}
 	}
 }

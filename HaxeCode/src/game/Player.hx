@@ -57,6 +57,9 @@ class Player extends CharacterBody3D {
 
 	var isIntro = true;
 
+	var doSomethingType = 0;
+	var doSomethingTimer = 0.0;
+
 	var spellCount = 0;
 	var spellNames = [];
 
@@ -183,6 +186,7 @@ class Player extends CharacterBody3D {
 				resetCameraPosition();
 
 				clearTeleport();
+				resetLevel();
 
 				// on respawn onRespawn
 			}
@@ -208,6 +212,10 @@ class Player extends CharacterBody3D {
 		}
 
 		updateCameraShake();
+
+		if(doSomethingType == 1) {
+			updateSummonCrap(delta);
+		}
 
 		if(canTeleport()) {
 			if(hasTeleport && storedTeleport == 0 && GameInput.isLeftActionJustPressed()) {
@@ -243,6 +251,10 @@ class Player extends CharacterBody3D {
 				storedTeleport = 4;
 				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
 				sst.enter();
+			} else if(GameInput.isRightActionJustPressed()) {
+				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+				sst.onUnalive();
+				storedTeleport = 0;
 			}
 		}
 
@@ -310,6 +322,9 @@ class Player extends CharacterBody3D {
 	}
 
 	function canMove() {
+		if(doSomethingType > 0) {
+			return false;
+		}
 		if(isIntro) {
 			if(right.hasAnimation()) {
 				return false;
@@ -321,6 +336,9 @@ class Player extends CharacterBody3D {
 	}
 
 	function canTeleport() {
+		if(doSomethingType > 0) {
+			return false;
+		}
 		return !isFallingIntoNextLevel;
 	}
 
@@ -565,12 +583,12 @@ class Player extends CharacterBody3D {
 		velocity.z = velocity2d.y;
 	}
 
-	public function obtainGoodJump() {
-		hasGoodJump = true;
+	public function obtainGoodJump(obtain: Bool) {
+		hasGoodJump = obtain;
 	}
 
-	public function obtainTeleport() {
-		hasTeleport = true;
+	public function obtainTeleport(obtain: Bool) {
+		hasTeleport = obtain;
 	}
 
 	public function addSpell(spellName: String) {
@@ -608,6 +626,24 @@ class Player extends CharacterBody3D {
 	}
 
 	public function summonCrap() {
-		
+		doSomethingType = 1;
+		doSomethingTimer = 0.0;
+	}
+
+	function updateSummonCrap(delta: Float) {
+		doSomethingTimer += 3.0 * delta;
+		if(doSomethingTimer >= 1.0) doSomethingTimer = 1.0;
+
+		final junk = this.get_scene_node("Geometry/JunkHolder").as(Node3D);
+		junk.position.y = Godot.lerp(-3.0, 0.0, doSomethingTimer);
+
+		if(doSomethingTimer >= 1.0) {
+			doSomethingType = 0;
+			doSomethingTimer = 0.0;
+		}
+	}
+
+	function resetLevel() {
+		this.get_persistent_node("CurrentLevel").as(Level).resetLevel();
 	}
 }

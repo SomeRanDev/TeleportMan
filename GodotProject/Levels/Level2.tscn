@@ -28,6 +28,7 @@ data = PackedVector3Array(0.4688, 1.0947, 0.1976, 0.5, 0.9358, 0.2392, 0.4375, 1
 
 [node name="Level2" type="Node3D"]
 script = ExtResource("1_py3wt")
+levelId = 2
 nextLevelName = "Level3"
 
 [node name="LevelWalls" type="MeshInstance3D" parent="."]

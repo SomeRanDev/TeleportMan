@@ -33,6 +33,10 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "materials": {
+"Blue": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Blue.tres"
+},
 "Grass": {
 "use_external/enabled": true,
 "use_external/path": "res://VisualAssets/Materials/Grass.tres"
@@ -44,6 +48,10 @@ _subresources={
 "Rails": {
 "use_external/enabled": true,
 "use_external/path": "res://VisualAssets/Materials/Rail.tres"
+},
+"Red": {
+"use_external/enabled": true,
+"use_external/path": "res://VisualAssets/Materials/Red.tres"
 },
 "Sides": {
 "use_external/enabled": true,
@@ -78,6 +86,15 @@ _subresources={
 "save_to_file/enabled": true,
 "save_to_file/path": "res://VisualAssets/Blender/Level3/RockyRamp.res"
 },
+"Level3_BezierCurve_001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/Junk5.res"
+},
 "Level3_Circle_002": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
@@ -95,6 +112,42 @@ _subresources={
 "lods/normal_split_angle": 25.0,
 "save_to_file/enabled": true,
 "save_to_file/path": "res://VisualAssets/Blender/Level3/TiltedPlatform.res"
+},
+"Level3_Cube": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/Junk1.res"
+},
+"Level3_Cube_001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/Junk4.res"
+},
+"Level3_Cylinder": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/Junk2.res"
+},
+"Level3_Torus": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://VisualAssets/Blender/Level3/Junk3.res"
 }
 }
 }
