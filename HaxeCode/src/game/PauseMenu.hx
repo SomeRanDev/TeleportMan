@@ -21,6 +21,7 @@ class PauseMenu extends ColorRect {
 	function onResumePressed() {
 		Input.set_mouse_mode(MOUSE_MODE_CAPTURED);
 		visible = false;
+		get_tree().paused = false;
 	}
 
 	function onRestartPressed() {
@@ -29,6 +30,7 @@ class PauseMenu extends ColorRect {
 
 		final player = this.get_persistent_node("Player").as(Player);
 		player.perishByLava();
+		get_tree().paused = false;
 	}
 
 	function onMouseSensitivityChanged(value: Float) {

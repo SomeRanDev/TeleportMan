@@ -98,12 +98,13 @@ shader_parameter/angle = 0.0
 
 [node name="PersistentContent" type="Node3D"]
 script = ExtResource("1_nlqod")
-firstLevelName = "Level4"
+firstLevelName = "Level1"
 
 [node name="Player" type="CharacterBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.28955, 3.57665)
 floor_snap_length = 0.3
 script = ExtResource("1_x4iy1")
+playIntroAnimation = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_ee1mi")
@@ -299,6 +300,8 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PauseMenu" type="ColorRect" parent="."]
+process_mode = 2
+visible = false
 z_index = 10
 offset_right = 1152.0
 offset_bottom = 648.0

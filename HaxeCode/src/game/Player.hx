@@ -70,6 +70,8 @@ class Player extends CharacterBody3D {
 
 	var mouseSensitivity = 50.0;
 
+	var gameIsEnded = false;
+
 	var storedVelocity: Vector3;
 
 	static final MAX_HORIZONTAL_SPEED = 15.0;
@@ -174,9 +176,10 @@ class Player extends CharacterBody3D {
 	public override function _process(delta: Float) {
 		GameInput.update();
 
-		if(Input.get_mouse_mode() != MOUSE_MODE_CAPTURED) {
+		if(!isIntro && Input.get_mouse_mode() != MOUSE_MODE_CAPTURED) {
 			final menu = this.get_persistent_node("PauseMenu").as(ColorRect);
 			if(!menu.visible) {
+				get_tree().paused = true;
 				menu.visible = true;
 			}
 		}
@@ -190,6 +193,13 @@ class Player extends CharacterBody3D {
 			transitionShader.set_shader_parameter("animationRatio", Math.min(1.0, perishAnimationTimer * perishAnimationTimer));
 
 			if(perishAnimationTimer >= 1.0) {
+				if(gameIsEnded) {
+					isPerishing = false;
+					Input.set_mouse_mode(MOUSE_MODE_VISIBLE);
+					get_tree().change_scene_to_file("res://Levels/End.tscn");
+					return;
+				}
+
 				isPerishing = false;
 				perishAnimationTimer = 0.0;
 				global_position = respawnPosition;
@@ -406,11 +416,12 @@ class Player extends CharacterBody3D {
 
 		updateCamera(delta);
 
+		trace(timesJumpedInAir);
 		if(cachedJumpInput > 0.0 && (INFINITE_JUMPS || timeOffGround < 0.2 ||
-			(timesJumpedInAir == 0 && hasDoubleJump) || (timesJumpedInAir == 1 && hasTripleJump)
+			(timesJumpedInAir == 1 && hasDoubleJump) || (timesJumpedInAir == 1 && hasTripleJump)
 		)) {
 			if(timeOffGround < 0.2) {
-				timesJumpedInAir = 0;
+				timesJumpedInAir = 1;
 			} else {
 				timesJumpedInAir++;
 			}
@@ -420,7 +431,7 @@ class Player extends CharacterBody3D {
 			cachedJumpInput = 0.0;
 			maxHorizontalAerialSpeed = Math.max(MAX_HORIZONTAL_SPEED, getHorizontalSpeedVector().length());
 
-			timeOffGround = 0.2;
+			timeOffGround = 1.0;
 		}
 
 		final inputDir = if(canMove()) {
@@ -710,5 +721,9 @@ class Player extends CharacterBody3D {
 	}
 
 	public function bruh() {
+	}
+
+	public function endGame() {
+		gameIsEnded = true;
 	}
 }

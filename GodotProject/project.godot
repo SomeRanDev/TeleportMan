@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="TeleportMan"
-run/main_scene="res://Levels/PersistentContent.tscn"
+run/main_scene="res://Levels/Title.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 boot_splash/image="res://VisualAssets/TexturesAndSprites/Logo.png"
 config/icon="res://icon.svg"

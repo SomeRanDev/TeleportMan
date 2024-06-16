@@ -23,6 +23,7 @@ data = PackedVector3Array(4.3802, 17.1853, -24.849, 0.9484, 17.1853, -26.4748, 4
 
 [node name="Level7" type="Node3D"]
 script = ExtResource("1_tiwq6")
+levelId = 7
 nextLevelName = "Level8"
 
 [node name="LevelWalls" type="MeshInstance3D" parent="."]

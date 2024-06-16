@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjry5occlu5kg"]
+
+[ext_resource type="Texture2D" uid="uid://b718d3ns054m8" path="res://VisualAssets/TexturesAndSprites/Title1.png" id="2_4y5u4"]
+
+[node name="Title" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("2_4y5u4")
+offset = Vector2(576, 324)
+
+[node name="FadeOut" type="ColorRect" parent="."]
+offset_right = 1176.0
+offset_bottom = 658.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 118.0
+offset_top = 26.0
+offset_right = 1073.0
+offset_bottom = 311.0
+theme_override_font_sizes/font_size = 50
+text = "The spell was fake and protagonist guy
+did not survive the lava after all.
+
+The end, thanks for playing. :^0"
+horizontal_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 68.0
+offset_top = 346.0
+offset_right = 551.0
+offset_bottom = 433.0
+rotation = 0.179707
+theme_override_font_sizes/font_size = 25
+text = "(yes this is all i have for the end screen.)"
+
+[node name="Label3" type="Label" parent="."]
+offset_left = 508.0
+offset_top = 516.0
+offset_right = 1126.0
+offset_bottom = 603.0
+rotation = -0.143771
+theme_override_font_sizes/font_size = 25
+text = "(im out of time, you lucky you get end screen at all)"
+
+[node name="Label4" type="Label" parent="."]
+offset_left = 86.0
+offset_top = 532.0
+offset_right = 704.0
+offset_bottom = 619.0
+rotation = 0.0908061
+theme_override_font_sizes/font_size = 25
+text = "(rate 5/5 stars ignore the lack of audio lmao)"

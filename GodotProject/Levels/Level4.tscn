@@ -137,10 +137,10 @@ cull_mask = 1048573
 
 [node name="DoubleJumpSpell" parent="." instance=ExtResource("13_2qm5h")]
 transform = Transform3D(0.907704, 0, 0.419611, 0, 1, 0, -0.419611, 0, 0.907704, -8.53656, -12.0429, -34.5322)
-onPickup = "player.setDoubleJump(true)"
-spellName = "Spell that gives you double jump"
+onPickup = "player.setHasDoubleJump(true)"
+spellName = "Spell that MIGHT give you double jump"
 
 [node name="FakeSpell" parent="." instance=ExtResource("13_2qm5h")]
 transform = Transform3D(-0.492713, 0, 0.870192, 0, 1, 0, -0.870192, 0, -0.492713, -17.3511, -27.0588, -14.1908)
 onPickup = "player.bruh()"
-spellName = "Spell that tells you that you can reset the level in the pause menu"
+spellName = "Spell that has a reall cool feature that can simply be activated by doing the following thing"

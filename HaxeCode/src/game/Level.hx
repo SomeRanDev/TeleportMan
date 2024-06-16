@@ -77,6 +77,11 @@ class Level extends Node3D {
 
 			respawnSpell("TeleportSpell");
 			respawnSpell("SummonJunkSpell");
+		} else if(levelId == 4) {
+			player.setHasDoubleJump(false);
+
+			respawnSpell("DoubleJumpSpell");
+			respawnSpell("FakeSpell");
 		} else if(levelId == 6) {
 			final lava = this.get_scene_node("Lava").as(Lava);
 			lava.initLavaLevel();
