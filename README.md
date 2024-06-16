@@ -2,6 +2,8 @@
 
 He be porting.
 
+Please don't roast my code, 50% of this was written in 6 hours.
+
 ## How to Compile Shit
 
 1) Generate `extension_api.json` in HaxeCode/godot_bindings for your Godot version.
