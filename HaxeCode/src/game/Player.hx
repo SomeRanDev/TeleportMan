@@ -5,6 +5,7 @@ import godot.*;
 import game.Input.GameInput;
 import game.LiveActionPlayer.LiveActionPlayerLeft;
 import game.LiveActionPlayer.LiveActionPlayerRight;
+import game.AutomoveNode3d;
 
 using game.NodeHelpers;
 using game.MacroHelpers;
@@ -48,7 +49,7 @@ class Player extends CharacterBody3D {
 
 	var cameraShake: Float = 0.0;
 
-	var hasGoodJump = false;
+	var hasGoodJump = true;
 	var hasTeleport = false;
 
 	var currentLeftAnimation: String;
@@ -58,6 +59,8 @@ class Player extends CharacterBody3D {
 
 	var spellCount = 0;
 	var spellNames = [];
+
+	var storedVelocity: Vector3;
 
 	static final MAX_HORIZONTAL_SPEED = 15.0;
 	static final INFINITE_JUMPS = false;
@@ -72,6 +75,7 @@ class Player extends CharacterBody3D {
 		targetFallSpot = location;
 		initialFallSpot = new Vector3(-9999, global_position.y, 0);
 		setRespawnPosition(location);
+		clearTeleport();
 	}
 
 	public function setRespawnPosition(location: Vector3) {
@@ -151,6 +155,12 @@ class Player extends CharacterBody3D {
 		camera.position = Vector3.ZERO;
 	}
 
+	function clearTeleport() {
+		final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+		sst.onUnalive();
+		storedTeleport = 0;
+	}
+
 	public override function _process(delta: Float) {
 		GameInput.update();
 
@@ -172,8 +182,7 @@ class Player extends CharacterBody3D {
 				cameraShake = 0.0;
 				resetCameraPosition();
 
-				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
-				sst.onUnalive();
+				clearTeleport();
 
 				// on respawn onRespawn
 			}
@@ -200,38 +209,41 @@ class Player extends CharacterBody3D {
 
 		updateCameraShake();
 
-		if(hasTeleport && storedTeleport == 0 && GameInput.isLeftActionJustPressed()) {
-			final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
-			teleportToCamera.set_global_transform(camera.get_global_transform());
-
-			storedTeleport = 1;
-			storedPosition = get_global_position();
-			storedMouseRotation = mouseRotation;
-			storedCameraForward = -camera.get_global_transform().basis.z;
-
-			// final sst = new ScreenshotTake();
-			// sst.set_position(new Vector3(0, 0, -0.8));
-			// sst.set_rotation_degrees(new Vector3(90, 0, 0));
-			// final material: StandardMaterial3D = cast ResourceLoader.load("res://VisualAssets/Materials/ScreenshotTakeMaterial.tres");
-			// cast(material.albedo_texture, ViewportTexture).viewport_path = new NodePath("TeleportToViewport");
-			// sst.set_surface_override_material(0, material);
-			// camera.add_child(sst);
-
-			//right.setAnimation(right.teleportStart);
-
-			final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
-			sst.reset();
-		} else if(storedTeleport == 1) {
-			final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
-			teleportToCamera.set_global_transform(camera.get_global_transform());
-
-			storedPosition = get_global_position();
-			storedMouseRotation = mouseRotation;
-			storedCameraForward = -camera.get_global_transform().basis.z;
-		} else if(hasTeleport && storedTeleport == 3 && GameInput.isLeftActionJustPressed()) {
-			storedTeleport = 4;
-			final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
-			sst.enter();
+		if(canTeleport()) {
+			if(hasTeleport && storedTeleport == 0 && GameInput.isLeftActionJustPressed()) {
+				final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
+				teleportToCamera.set_global_transform(camera.get_global_transform());
+	
+				storedTeleport = 1;
+				storedPosition = get_global_position();
+				storedMouseRotation = mouseRotation;
+				storedCameraForward = -camera.get_global_transform().basis.z;
+	
+				// final sst = new ScreenshotTake();
+				// sst.set_position(new Vector3(0, 0, -0.8));
+				// sst.set_rotation_degrees(new Vector3(90, 0, 0));
+				// final material: StandardMaterial3D = cast ResourceLoader.load("res://VisualAssets/Materials/ScreenshotTakeMaterial.tres");
+				// cast(material.albedo_texture, ViewportTexture).viewport_path = new NodePath("TeleportToViewport");
+				// sst.set_surface_override_material(0, material);
+				// camera.add_child(sst);
+	
+				//right.setAnimation(right.teleportStart);
+	
+				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+				sst.reset();
+			} else if(storedTeleport == 1) {
+				final teleportToCamera: Node3D = cast this.get_persistent_node("TeleportToViewport/TeleportToController/TeleportTo");
+				teleportToCamera.set_global_transform(camera.get_global_transform());
+	
+				storedPosition = get_global_position();
+				storedMouseRotation = mouseRotation;
+				storedCameraForward = -camera.get_global_transform().basis.z;
+			} else if(hasTeleport && storedTeleport == 3 && GameInput.isLeftActionJustPressed()) {
+				storedVelocity = velocity;
+				storedTeleport = 4;
+				final sst: ScreenshotTake = cast camera.get_node("ScreenshotTake");
+				sst.enter();
+			}
 		}
 
 		if(is_on_floor()) {
@@ -257,8 +269,14 @@ class Player extends CharacterBody3D {
 
 	public function finishTeleport() {
 		final cameraForwardVector = -camera.get_global_transform().basis.z;
-		final velocityForward = get_velocity().normalized();
-		final speed = get_velocity().length();
+
+		var trueVelocity = velocity;
+		if(trueVelocity.length() < storedVelocity.length()) {
+			trueVelocity = storedVelocity;
+		}
+
+		final velocityForward = trueVelocity.normalized();
+		final speed = trueVelocity.length();
 
 		if(speed > 0.0) {
 			if(velocityForward.is_equal_approx(Vector3.UP)) {
@@ -300,6 +318,10 @@ class Player extends CharacterBody3D {
 			}
 		}
 		return (!isFallingIntoNextLevel && initialFallSpot.x > -9998) || hitGroundShake > 0.0;
+	}
+
+	function canTeleport() {
+		return !isFallingIntoNextLevel;
 	}
 
 	function updateSpeedTracker(delta: Float) {
@@ -523,6 +545,11 @@ class Player extends CharacterBody3D {
 	}
 
 	public function perishByLava() {
+		// If currently teleporting...
+		if(storedTeleport == 4) {
+			return;
+		}
+
 		isPerishing = true;
 		perishAnimationTimer = 0.0;
 
@@ -573,5 +600,14 @@ class Player extends CharacterBody3D {
 	}
 
 	function updateAnimations() {
+	}
+
+	public function removeMonkeyHead() {
+		final monkeyHead = this.get_scene_node("MonkeyHead").as(AutomoveNode3d);
+		monkeyHead.speed = 2.0;
+	}
+
+	public function summonCrap() {
+		
 	}
 }

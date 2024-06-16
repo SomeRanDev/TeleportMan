@@ -156,3 +156,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.4728, -30.061, -18.5146)
 transform = Transform3D(0.907704, 0, 0.419611, 0, 1, 0, -0.419611, 0, 0.907704, -19.7702, -32.4062, -8.93045)
 onPickup = "player.obtainTeleport()"
 spellName = "Teleport"
+
+[node name="SummonJunkSpell" parent="." instance=ExtResource("14_qoqxp")]
+transform = Transform3D(0.907704, 0, 0.419611, 0, 1, 0, -0.419611, 0, 0.907704, 4.48638, -28.8768, 12.4168)
+onPickup = "player.summonCrap()"
+spellName = "Spell that summons random crap"
