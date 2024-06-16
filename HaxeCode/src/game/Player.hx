@@ -50,8 +50,8 @@ class Player extends CharacterBody3D {
 
 	var cameraShake: Float = 0.0;
 
-	var hasGoodJump = true;
-	var hasTeleport = true;
+	var hasGoodJump = false;
+	var hasTeleport = false;
 
 	var timesJumpedInAir = 0;
 	var hasDoubleJump = false;
